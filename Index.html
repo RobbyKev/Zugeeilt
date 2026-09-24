@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ZU ZWEIT</title>
+<meta name="theme-color" content="#FFD400">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zu zweit">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Archivo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFF3DC; --ink:#141014; --card:#FFFFFF; --card-ink:#141014; --line:#000000;
+  --dot:rgba(0,0,0,.13);
+  --yellow:#FFD400; --pink:#FF2E88; --cyan:#00C2FF; --red:#FF3B20; --mint:#00D68F;
+  --shadow:6px 6px 0 var(--line); --shadow-lg:10px 10px 0 var(--line);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#170F1E; --ink:#FDF4E4; --card:#FBF3E6; --card-ink:#140F19; --dot:rgba(255,255,255,.12);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#170F1E; --ink:#FDF4E4; --card:#FBF3E6; --card-ink:#140F19; --dot:rgba(255,255,255,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background-color:var(--paper);
+  background-image:radial-gradient(var(--dot) 1.6px, transparent 1.7px);
+  background-size:14px 14px;
+  color:var(--ink);
+  font-family:'Archivo','Helvetica Neue',Arial,sans-serif;
+  font-weight:600; font-size:17px; line-height:1.45;
+  display:flex; justify-content:center;
+  padding:14px 14px calc(18px + env(safe-area-inset-bottom));
+}
+.app{width:100%;max-width:520px;display:flex;flex-direction:column;gap:16px}
+h1,h2,.display{font-family:'Bungee','Archivo',Impact,sans-serif;font-weight:400;line-height:.95}
+
+.panel{background:var(--card);color:var(--card-ink);border:4px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+.btn{display:block;width:100%;text-align:center;background:var(--card);color:var(--card-ink);
+  border:4px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;
+  font-weight:800;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(6px,6px);box-shadow:0 0 0 var(--line)}
+.btn--go{background:var(--yellow);font-family:'Bungee','Archivo',sans-serif;font-size:1.25rem;padding:18px;color:#141014}
+.btn--yes{background:var(--mint);color:#0B1A14}
+.btn--pink{background:var(--pink);color:#fff}
+.btn--cyan{background:var(--cyan);color:#0A1620}
+.btn--count{background:var(--yellow);color:#141014;font-family:'Bungee',sans-serif;font-size:1.8rem;padding:22px}
+.btn--skip{box-shadow:none;border-width:3px;padding:9px;font-size:.85rem;background:transparent;color:var(--ink);opacity:.8}
+.btn--small{padding:10px;font-size:.9rem}
+.btn:focus-visible,.chip:focus-visible,.icon:focus-visible,input:focus-visible,textarea:focus-visible,.del:focus-visible{outline:4px solid var(--red);outline-offset:3px}
+.row{display:grid;gap:10px}
+.row.two{grid-template-columns:1fr 1fr}
+
+.topbar{display:flex;align-items:stretch;gap:10px}
+.score{flex:1;border:4px solid var(--line);border-radius:14px;padding:8px 10px;background:var(--card);
+  color:var(--card-ink);box-shadow:4px 4px 0 var(--line);min-width:0}
+.score b{display:block;font-size:.8rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score span{font-family:'Bungee',sans-serif;font-size:1.7rem;line-height:1}
+.score i{font-style:normal;font-size:.72rem;font-weight:800;opacity:.75;display:block}
+.score.on{background:var(--yellow);color:#141014;transform:rotate(-1.5deg)}
+.score.on.p2{background:var(--cyan);transform:rotate(1.5deg)}
+.icon{width:52px;flex:0 0 52px;border:4px solid var(--line);border-radius:14px;background:var(--card);
+  color:var(--card-ink);box-shadow:4px 4px 0 var(--line);font-size:1.4rem;line-height:1}
+.icon:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--line)}
+.strip{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;font-weight:800;
+  border:3px solid var(--line);border-radius:10px;padding:5px 10px;background:var(--card);color:var(--card-ink)}
+
+.hero{text-align:center;padding:24px 14px 26px}
+.hero h1{font-size:clamp(2.6rem,15vw,4.2rem);color:var(--yellow);
+  text-shadow:4px 4px 0 var(--line),-2px -2px 0 var(--line),2px -2px 0 var(--line),-2px 2px 0 var(--line)}
+.hero h1 em{font-style:normal;display:block;color:var(--pink)}
+.hero p{margin-top:14px;font-size:.95rem;max-width:34ch;margin-inline:auto}
+.label{font-family:'Bungee',sans-serif;font-size:1rem;margin-bottom:10px;display:block}
+input[type=text],textarea{width:100%;border:4px solid var(--line);border-radius:14px;padding:12px 14px;
+  background:var(--card);color:var(--card-ink);font:inherit;font-weight:800;resize:vertical}
+textarea{font-size:.8rem;font-weight:600;min-height:90px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:4px solid var(--line);border-radius:999px;padding:8px 14px;font-weight:800;font-size:.9rem;
+  background:var(--card);color:var(--card-ink);box-shadow:3px 3px 0 var(--line)}
+.chip[aria-pressed="true"]{background:var(--pink);color:#fff}
+.chip.lvl[aria-pressed="true"]{background:var(--cyan);color:#0A1620}
+.chip.opt[aria-pressed="true"]{background:var(--yellow);color:#141014}
+.hint{font-size:.82rem;font-weight:600;opacity:.75;margin-top:8px}
+
+.stage{display:flex;flex-direction:column;gap:14px}
+.card{position:relative;background:var(--card);color:var(--card-ink);border:5px solid var(--line);
+  border-radius:22px;box-shadow:var(--shadow-lg);padding:34px 22px 26px;min-height:230px;
+  display:flex;flex-direction:column;justify-content:center;gap:12px}
+.badge{position:absolute;top:-16px;left:16px;transform:rotate(-4deg);background:var(--pink);color:#fff;
+  border:4px solid var(--line);border-radius:10px;padding:5px 12px;font-family:'Bungee',sans-serif;
+  font-size:.85rem;box-shadow:3px 3px 0 var(--line);max-width:calc(100% - 32px)}
+.badge.m-quiz{background:var(--pink)}
+.badge.m-either{background:var(--cyan);color:#0A1620}
+.badge.m-dare{background:var(--red);color:#fff}
+.badge.m-tod{background:var(--yellow);color:#141014}
+.badge.m-who{background:var(--mint);color:#0B1A14}
+.badge.m-blitz{background:var(--yellow);color:#141014}
+.badge.m-draw{background:var(--cyan);color:#0A1620}
+.badge.m-memory{background:var(--pink);color:#fff}
+.badge.m-team{background:var(--mint);color:#0B1A14}
+.badge.m-choose{background:var(--card);color:var(--card-ink)}
+.badge.m-penalty{background:var(--red);color:#fff}
+.who{font-size:.95rem;font-weight:800}
+.q{font-family:'Bungee',sans-serif;font-size:clamp(1.2rem,5.4vw,1.7rem);line-height:1.18}
+.q.small{font-family:'Archivo',sans-serif;font-weight:800;font-size:1.08rem;line-height:1.35}
+.q.big{font-size:clamp(1.7rem,9vw,2.6rem)}
+.reveal{display:grid;gap:8px;margin-top:4px}
+.reveal div{border:3px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:800;font-size:.95rem;
+  background:var(--paper);color:var(--ink)}
+.padwrap{position:fixed;inset:0;z-index:20;background:var(--paper);display:flex;flex-direction:column;
+  gap:8px;padding:calc(10px + env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom))}
+.padbar{display:flex;gap:8px;align-items:center}
+.padtime{flex:0 0 78px;border:4px solid var(--line);border-radius:12px;background:var(--yellow);color:#141014;
+  font-family:'Bungee',sans-serif;font-size:1.5rem;text-align:center;padding:6px 0;line-height:1}
+.padtime.low{background:var(--red);color:#fff}
+.padtime.done{background:var(--mint);color:#0B1A14;font-size:1rem;padding:12px 0}
+.padbar button{flex:1;border:4px solid var(--line);border-radius:12px;background:var(--card);color:var(--card-ink);
+  font-weight:800;font-size:.85rem;padding:9px 4px}
+.padbar button:active{transform:translate(3px,3px)}
+.padcolors{display:flex;gap:8px}
+.swatch{flex:1;height:38px;border:4px solid var(--line);border-radius:12px}
+.swatch[aria-pressed="true"]{outline:4px solid var(--line);outline-offset:3px}
+#padCanvas{flex:1;width:100%;border:5px solid var(--line);border-radius:18px;background:#fff;
+  touch-action:none;display:block;min-height:120px}
+.padfoot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.padword{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) rotate(-3deg);z-index:22;
+  background:var(--yellow);color:#141014;border:5px solid var(--line);border-radius:16px;padding:16px 22px;
+  font-family:'Bungee',sans-serif;font-size:1.6rem;box-shadow:var(--shadow-lg);max-width:86vw;text-align:center}
+
+.verdict{font-family:'Bungee',sans-serif;font-size:1.45rem;text-align:center;margin-top:4px}
+.timer{margin-top:10px;border:4px solid var(--line);border-radius:14px;background:var(--yellow);color:#141014;
+  padding:12px;text-align:center;font-family:'Bungee',sans-serif;font-size:2.6rem;line-height:1}
+.timer.low{background:var(--red);color:#fff}
+.timer.done{background:var(--mint);color:#0B1A14;font-size:1.5rem;padding:16px}
+
+.handoff{border:5px dashed var(--line);border-radius:22px;background:var(--card);color:var(--card-ink);
+  padding:44px 20px;text-align:center;box-shadow:var(--shadow-lg)}
+.handoff .display{font-size:clamp(1.8rem,9vw,2.6rem);color:var(--pink)}
+.handoff p{margin-top:10px;font-size:.95rem}
+
+.final{text-align:center}
+.final .display{font-size:clamp(1.9rem,10vw,2.8rem);color:var(--yellow);
+  text-shadow:3px 3px 0 var(--line),-2px -2px 0 var(--line),2px -2px 0 var(--line),-2px 2px 0 var(--line)}
+.final .sc{font-family:'Bungee',sans-serif;font-size:2.2rem;margin:14px 0}
+
+.mylist{display:grid;gap:8px;margin-top:12px}
+.myitem{display:flex;gap:8px;align-items:center;border:3px solid var(--line);border-radius:12px;
+  padding:8px 10px;background:var(--paper);color:var(--ink);font-size:.88rem;font-weight:700}
+.myitem span{flex:1;min-width:0}
+.del{flex:0 0 34px;height:34px;border:3px solid var(--line);border-radius:9px;background:var(--red);color:#fff;
+  font-weight:800;line-height:1}
+.statrow{display:flex;justify-content:space-between;gap:12px;border-bottom:3px solid var(--line);padding:7px 0;
+  font-size:.92rem;font-weight:800}
+.statrow:last-child{border-bottom:none}
+
+.pop{animation:pop .22s ease-out}
+@keyframes pop{from{transform:scale(.94) rotate(-1deg);opacity:.4}to{transform:scale(1) rotate(0);opacity:1}}
+@media (prefers-reduced-motion: reduce){.pop{animation:none}.btn,.icon{transition:none}}
+.hide{display:none !important}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;
+  padding:18px;z-index:9}
+.sheet .panel{width:100%;max-width:460px;display:grid;gap:10px;max-height:88vh;overflow:auto}
+footer{text-align:center;font-size:.75rem;font-weight:600;opacity:.6}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section id="screen-start">
+    <div class="hero">
+      <h1>ZU<em>ZWEIT</em></h1>
+      <p>Ein Handy, zwei Leute. Spielen, wenn euch nach Wettkampf ist — oder einfach Zeit zu zweit.</p>
+    </div>
+
+    <div class="row" style="margin-bottom:16px">
+      <div class="row two">
+        <button class="btn btn--pink" id="evBtn">Abend zu zweit</button>
+        <button class="btn btn--cyan" id="minBtn">Zwei Minuten</button>
+      </div>
+      <button class="btn btn--yes" id="fragBtn">Fragenstapel</button>
+    </div>
+
+    <div class="panel" style="display:grid;gap:14px">
+      <div class="display" style="font-size:1.3rem">Spielabend mit Punkten</div>
+      <div>
+        <span class="label">Wer spielt?</span>
+        <div class="row two">
+          <input type="text" id="n1" placeholder="Uli" maxlength="14" autocomplete="off">
+          <input type="text" id="n2" placeholder="Kevin" maxlength="14" autocomplete="off">
+        </div>
+      </div>
+      <div>
+        <span class="label">Spielarten</span>
+        <div class="chips" id="modeChips"></div>
+      </div>
+      <div>
+        <span class="label">Wie tief soll's gehen?</span>
+        <div class="chips" id="levelChips"></div>
+      </div>
+      <div>
+        <span class="label">Wer bestimmt die Kategorie?</span>
+        <div class="chips" id="pickChips"></div>
+        <p class="hint">Wer dran ist: du suchst jede Runde selbst aus. Reihum: der Reihe nach durch alle Spielarten. Zufall: die App würfelt.</p>
+      </div>
+      <div>
+        <span class="label">Spielende</span>
+        <div class="chips" id="goalChips"></div>
+      </div>
+      <div>
+        <span class="label">Extras</span>
+        <div class="chips" id="extraChips"></div>
+        <p class="hint" id="poolHint"></p>
+      </div>
+      <button class="btn btn--go" id="startBtn">Los geht's</button>
+      <div class="row two">
+        <button class="btn btn--small" id="editBtn">Eigene Karten</button>
+        <button class="btn btn--small" id="statBtn">Statistik</button>
+      </div>
+    </div>
+    <footer>Alles bleibt auf diesem Handy gespeichert.</footer>
+  </section>
+
+  <section id="screen-game" class="hide">
+    <div class="topbar">
+      <div class="score" id="sc1"><b>—</b><span>0</span><i></i></div>
+      <div class="score p2" id="sc2"><b>—</b><span>0</span><i></i></div>
+      <button class="icon" id="menuBtn" aria-label="Menü">☰</button>
+    </div>
+    <div class="strip" id="strip" style="margin-top:10px"><span id="stripWave"></span><span id="stripGoal"></span></div>
+
+    <div class="stage" style="margin-top:14px">
+      <div id="handoff" class="handoff hide">
+        <div class="display" id="handoffName">—</div>
+        <p id="handoffText"></p>
+        <button class="btn btn--go" id="handoffBtn" style="margin-top:18px">Ich hab's</button>
+      </div>
+      <div id="cardWrap" class="hide">
+        <div class="card" id="card">
+          <span class="badge" id="badge">Quiz</span>
+          <div class="who" id="cardWho"></div>
+          <div class="q" id="cardQ"></div>
+          <div class="reveal hide" id="cardReveal"></div>
+          <div class="timer hide" id="timer">0</div>
+        </div>
+        <div class="row" id="actions" style="margin-top:14px"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-final" class="hide">
+    <div class="panel final">
+      <div class="display" id="finalTitle">Unentschieden</div>
+      <div class="sc" id="finalScore">0 : 0</div>
+      <p id="finalLine" style="font-size:.95rem"></p>
+      <div class="row" style="margin-top:18px">
+        <button class="btn btn--go" id="againBtn">Neue Runde, Punkte auf null</button>
+        <button class="btn" id="keepBtn">Weiterspielen, Punkte behalten</button>
+        <button class="btn btn--small" id="backBtn">Zurück zum Start</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-edit" class="hide">
+    <div class="panel" style="display:grid;gap:14px">
+      <div class="display" style="font-size:1.5rem">Eigene Karten</div>
+      <div>
+        <span class="label">Spielart</span>
+        <div class="chips" id="eModeChips"></div>
+      </div>
+      <div>
+        <span class="label">Stufe</span>
+        <div class="chips" id="eLevelChips"></div>
+      </div>
+      <div id="eFields" style="display:grid;gap:10px"></div>
+      <p class="hint" id="eHint"></p>
+      <button class="btn btn--yes" id="eAdd">Karte hinzufügen</button>
+      <div class="mylist" id="eList"></div>
+
+      <div style="border-top:4px solid var(--line);padding-top:14px">
+        <span class="label">Gemerkte Karten</span>
+        <div class="mylist" id="favList"></div>
+      </div>
+
+      <div style="border-top:4px solid var(--line);padding-top:14px;display:grid;gap:10px">
+        <span class="label">Sichern und übertragen</span>
+        <textarea id="eIO" placeholder="Hier erscheint dein Export. Zum Einlesen einen Export hier einfügen und auf Importieren tippen."></textarea>
+        <div class="row two">
+          <button class="btn btn--small" id="eExport">Exportieren</button>
+          <button class="btn btn--small" id="eImport">Importieren</button>
+        </div>
+        <p class="hint" id="eIOHint"></p>
+      </div>
+
+      <button class="btn btn--small" id="eBack">Fertig</button>
+    </div>
+  </section>
+
+  <div class="sheet hide" id="sheet">
+    <div class="panel">
+      <div class="display" style="font-size:1.4rem">Pause</div>
+      <button class="btn btn--cyan" id="mResume">Weiterspielen</button>
+      <button class="btn" id="mUndo">Letzte Runde zurücknehmen</button>
+      <button class="btn" id="mSettings">Einstellungen ändern</button>
+      <button class="btn" id="mCards">Eigene Karten</button>
+      <button class="btn" id="mStats">Statistik</button>
+      <button class="btn btn--pink" id="mEnd">Spiel beenden</button>
+    </div>
+  </div>
+
+  <section id="screen-fragen" class="hide">
+    <div class="panel" style="display:grid;gap:12px">
+      <div class="display" style="font-size:1.6rem">Fragenstapel</div>
+      <p style="font-size:.92rem">179 Fragen in sieben Kategorien. Einer liest vor, beide antworten. Aufhören, wann ihr wollt.</p>
+      <div class="chips" id="fragCats"></div>
+      <p class="hint" id="fragHint"></p>
+    </div>
+
+    <div id="fragCardWrap" class="hide" style="margin-top:16px">
+      <div class="card" id="fragCard">
+        <span class="badge m-memory" id="fragBadge">Kategorie</span>
+        <div class="q small" id="fragText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="fragNext">Nächste Frage</button>
+        <button class="btn btn--skip" id="fragFav">Frage merken</button>
+      </div>
+    </div>
+
+    <button class="btn btn--small" id="fragHome" style="margin-top:14px">Zurück zum Start</button>
+  </section>
+
+  <section id="screen-evening" class="hide">
+    <div id="evList">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Abend zu zweit</div>
+        <p style="font-size:.92rem">Fünf Etappen durch einen Abend. Keine Punkte, kein Gewinner. Am Stück oder verteilt auf mehrere Abende — die App merkt sich, wo ihr wart.</p>
+        <div class="row" id="evEtappen"></div>
+        <p class="hint" id="evProgress"></p>
+        <div id="evNotes" class="mylist"></div>
+        <div class="row two">
+          <button class="btn btn--small" id="evReset">Von vorn</button>
+          <button class="btn btn--small" id="evHome">Zurück zum Start</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="evRun" class="hide">
+      <div class="card" id="evCard">
+        <span class="badge m-memory" id="evTitle">Etappe</span>
+        <div class="who" id="evCount"></div>
+        <div class="q small" id="evText"></div>
+        <div id="evNoteWrap" class="hide" style="margin-top:6px">
+          <input type="text" id="evNote" placeholder="Euer Satz von heute Abend" maxlength="120" autocomplete="off">
+        </div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="evNext">Weiter</button>
+        <button class="btn btn--skip" id="evBack">Zurück zur Übersicht</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-minutes" class="hide">
+    <div id="minPick">
+      <div class="panel" style="display:grid;gap:12px">
+        <div class="display" style="font-size:1.6rem">Zwei Minuten</div>
+        <p style="font-size:.92rem">Drei Fragen, ein Thema, fertig. Für zwischendurch am Küchentisch oder abends im Bett.</p>
+        <div class="row" id="minThemes"></div>
+        <button class="btn btn--small" id="minHome">Zurück zum Start</button>
+      </div>
+    </div>
+    <div id="minRun" class="hide">
+      <div class="card" id="minCard">
+        <span class="badge m-quiz" id="minTheme">Thema</span>
+        <div class="who" id="minCount"></div>
+        <div class="q" id="minText"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn--go" id="minNext">Nächste Frage</button>
+        <button class="btn btn--skip" id="minBackPick">Anderes Thema</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="padwrap hide" id="pad">
+    <div class="padbar">
+      <div class="padtime" id="padTime">60</div>
+      <button type="button" id="padWord">Begriff zeigen</button>
+      <button type="button" id="padUndo">Zurück</button>
+      <button type="button" id="padClear">Leeren</button>
+    </div>
+    <div class="padcolors" id="padColors"></div>
+    <canvas id="padCanvas"></canvas>
+    <div class="padfoot">
+      <button class="btn btn--yes" id="padHit">Erraten</button>
+      <button class="btn btn--pink" id="padMiss">Daneben</button>
+    </div>
+  </div>
+
+  <div class="sheet hide" id="statSheet">
+    <div class="panel">
+      <div class="display" style="font-size:1.4rem">Statistik</div>
+      <div id="statBody"></div>
+      <button class="btn btn--cyan" id="stClose">Schließen</button>
+      <button class="btn btn--small" id="stReset">Statistik zurücksetzen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== INHALTE ==================== */
+var DATA = {
+  quiz:{
+    locker:[
+      "Was hat {YOU} zuletzt online bestellt?",
+      "Welchen Podcast oder Sender hört {YOU} beim Autofahren?",
+      "Was würde {YOU} als Erstes retten, wenn es brennt?",
+      "Welche Sendung schaut {YOU} nur, wenn keiner zuguckt?",
+      "Wie viele Wecker stellt {YOU} morgens?",
+      "Was hat {YOU} zuletzt kaputt gemacht und nichts gesagt?",
+      "Welches Werkzeug oder Küchenteil benutzt {YOU} ständig?",
+      "Was bestellt {YOU}, wenn die Karte zu groß ist?",
+      "Welche Farbe trägt {YOU} am häufigsten?",
+      "Welches Essen rührt {YOU} nie wieder an?",
+      "Wie viele Tassen Kaffee oder Tee trinkt {YOU} am Tag?",
+      "Welche Serie hat {YOU} heimlich ohne {ME} weitergeschaut?",
+      "Was steckt gerade in der Jackentasche von {YOU}?",
+      "Welches Lied singt {YOU} falsch mit, ohne es zu merken?",
+      "Was nervt {YOU} im Haushalt am meisten?",
+      "Was ist der Lieblingsplatz von {YOU} in der Wohnung?",
+      "Welche App öffnet {YOU} morgens als Erstes?",
+      "Was kauft sich {YOU} von 100 Euro geschenktem Geld?",
+      "Wie lange braucht {YOU} morgens wirklich, bis er ansprechbar ist?",
+      "Wovor drückt sich {YOU} seit Wochen?",
+      "Welchen Film kann {YOU} fast auswendig mitsprechen?",
+      "Was isst {YOU} morgens, wenn es schnell gehen muss?",
+      "Welche Arbeit im Haushalt schiebt {YOU} am längsten auf?",
+      "Was wollte {YOU} als Kind werden?",
+      "Welches Getränk bestellt {YOU} auswärts fast immer?",
+      "Was macht {YOU} als Erstes, wenn er nach Hause kommt?",
+      "Welches Wort benutzt {YOU} ständig?",
+      "Womit kann man {YOU} in fünf Minuten gute Laune machen?",
+      "Bei welchem Film hat {YOU} heimlich geheult?",
+      "Was liegt bei {YOU} seit Monaten rum und wird nie benutzt?"
+    ],
+    nah:[
+      "Woran hat {YOU} gemerkt, dass da mehr ist als Sympathie?",
+      "Was gibt {YOU} das Gefühl, richtig angekommen zu sein?",
+      "Welchen Satz würde {YOU} am liebsten öfter von {ME} hören?",
+      "Was hat {YOU} in den letzten Jahren losgelassen?",
+      "Wofür würde {YOU} sofort kämpfen?",
+      "Was macht {YOU} traurig, ohne dass er es zeigt?",
+      "Welchen Menschen würde {YOU} gern einmal wiedersehen?",
+      "Was ist für {YOU} das Gegenteil von einem guten Tag?",
+      "Wann war {YOU} zuletzt richtig stolz auf {ME}?",
+      "Welchen Satz von {ME} denkt sich {YOU}, wenn {ME} nicht da ist?",
+      "Wovor hat {YOU} gerade am meisten Angst?",
+      "Was macht {YOU}, wenn es ihm schlecht geht, ohne es zu sagen?",
+      "Was wünscht sich {YOU} öfter von {ME}?",
+      "Welchen gemeinsamen Tag würde {YOU} genau so nochmal erleben?",
+      "Was hat sich bei {YOU} verändert, seit ihr zusammen seid?",
+      "Welches Kompliment von {ME} bleibt bei {YOU} hängen?",
+      "Welcher Streit wurde für {YOU} nie richtig zu Ende geführt?",
+      "Was ist der größte Plan von {YOU} für die nächsten fünf Jahre?",
+      "Wann hat sich {YOU} zuletzt von {ME} getragen gefühlt?",
+      "Worauf ist {YOU} in seinem Leben am meisten stolz?",
+      "Welchen Menschen vermisst {YOU} am meisten?",
+      "Was würde {YOU} sofort ändern, wenn Geld keine Rolle spielt?",
+      "Worüber macht sich {YOU} nachts Gedanken?",
+      "Welcher Ort bedeutet {YOU} am meisten?",
+      "Was war für {YOU} das schwerste Jahr?",
+      "Welches Versprechen von {ME} ist {YOU} besonders wichtig?",
+      "Was tut {YOU} gut, wenn er nichts mehr sagen kann?",
+      "Wann hat {YOU} zuletzt geweint?",
+      "Welche eurer Entscheidungen bereut {YOU} nicht eine Sekunde?"
+    ],
+    frech:[
+      "Wo war für {YOU} euer ungewöhnlichster Kuss?",
+      "Was bringt {YOU} dazu, alles stehen zu lassen?",
+      "Welche Berührung mag {YOU} am liebsten?",
+      "Was würde {YOU} sofort mit {ME} machen, wenn morgen frei wäre?",
+      "Welches Detail an {ME} fällt {YOU} immer wieder auf?",
+      "Was macht {ME}, ohne es zu merken, und {YOU} findet es heiß?",
+      "Was findet {YOU} an {ME} körperlich am anziehendsten?",
+      "Was ist {YOU} als Erstes an {ME} aufgefallen?",
+      "Welche Angewohnheit von {ME} findet {YOU} heimlich heiß?",
+      "Wann hat {ME} ihn zuletzt absichtlich abgelenkt?",
+      "Was hat sich {YOU} schon überlegt, aber nie ausgesprochen?",
+      "Welcher Ort steht bei {YOU} noch auf der Liste?",
+      "Was zieht {YOU} an, wenn er will, dass {ME} hinschaut?",
+      "Welche Nachricht von {ME} hat {YOU} nie gelöscht?",
+      "Woran denkt {YOU}, wenn {ME} frisch geduscht ins Zimmer kommt?",
+      "Was bringt {YOU} sofort in Stimmung?",
+      "Was hat {YOU} beim ersten Mal gedacht?",
+      "Welches Kleidungsstück von {ME} würde {YOU} am liebsten wegwerfen?",
+      "Welcher Song erinnert {YOU} an eine bestimmte Nacht?",
+      "Wo würde {YOU} {ME} gern mal küssen, ohne dass es jemand sieht?",
+      "Was macht {ME}, das {YOU} nie zugeben würde zu mögen?"
+    ]
+  },
+  either:{
+    locker:[
+      ["Urlaub","Berge","Meer"],
+      ["Reise","Alles durchplanen","Vor Ort entscheiden"],
+      ["Musik daheim","Immer an","Lieber Ruhe"],
+      ["Besuch","Spontan vorbeikommen","Vorher anrufen"],
+      ["Winterabend","Raus in die Kälte","Drinnen bleiben"],
+      ["Wäsche: Wer macht was?","Waschen und aufhängen","Zusammenlegen","duo"],
+      ["Kochen: Wer macht was?","Rezept aussuchen","Nachher aufräumen","duo"],["Abend","Couch und Serie","Raus unter Leute"],
+      ["Morgens","Fünfmal snoozen","Sofort raus"],["Essen","Selber kochen","Bestellen"],
+      ["Jahreszeit","Sommer","Winter"],["Film","Kino","Heimkino"],
+      ["Wohnung","Sofort aufräumen","Chaos aushalten"],["Autofahrt","Reden","Musik laut"],
+      ["Frühstück","Groß und in Ruhe","Kaffee im Stehen"],["Samstag","Möbelhaus","Baumarkt"],
+      ["Geschenk","Etwas Praktisches","Etwas Verrücktes"],["Party","Erster da","Letzter weg"],
+      ["Abendessen","Früh und pünktlich","Spät und spontan"],
+      ["Serienabend","Zusammen gucken","Jeder sein Ding"],
+      ["Wochenende","Ausschlafen","Früh raus und was machen"],
+      ["Sofa","Jeder seine Seite","Aufeinander"],
+      ["Abendessen: Wer macht was?","Kochen","Abspülen","duo"],
+      ["Autofahrt: Wer macht was?","Fahren","Navigieren","duo"],
+      ["Feier planen: Wer macht was?","Organisieren","Gäste bespaßen","duo"],
+      ["Geschenke: Was liegt dir mehr?","Aussuchen und schenken","Beschenkt werden","duo"],
+      ["Einkaufen: Wer macht was?","Liste schreiben","Durch die Regale jagen","duo"],
+      ["Handwerken: Wer macht was?","Bohren","Halten und anzeichnen","duo"]
+    ],
+    nah:[
+      ["Lieber","Alles sagen","Manches für dich behalten"],
+      ["Entscheidungen","Bauchgefühl","Erstmal drüber schlafen"],
+      ["Wenn du Mist gebaut hast","Sofort sagen","Warten auf den Moment"],
+      ["Nach einem harten Tag","Reden","Schweigen und Nähe"],
+      ["Schwere Themen: Wer macht was?","Anfangen","Nachhaken","duo"],
+      ["Streit","Sofort klären","Erst drüber schlafen"],
+      ["Am liebsten","Überraschung","Guter Plan"],
+      ["Alt werden","Am Meer","Mitten in der Stadt"],
+      ["Wochenende","Nur wir zwei","Mit Freunden"],
+      ["Wenn's mir mies geht","Umarmung","Ehrliches Gespräch"],
+      ["Superkraft","Gedanken lesen","Eine Woche zurückreisen"],
+      ["Freie Zeit","Ein Tag zusammen","Eine Woche für dich allein"],
+      ["Von dir","Ehrliche Kritik","Rückhalt ohne Nachfragen"],
+      ["Zukunft","Sicherheit","Abenteuer"],
+      ["Kummer","Alleine verarbeiten","Sofort erzählen"],
+      ["Liebe zeigen","Sagen","Machen"],
+      ["Erinnerungen","Fotos ansehen","Einfach erzählen"],
+      ["Nach dem Streit: Wer macht was?","Den ersten Schritt machen","Nachgeben","duo"],
+      ["Wenn's schwer wird: Wer macht was?","Den Kopf oben halten","Sich fallen lassen","duo"],
+      ["Trost: Was liegt dir mehr?","Trösten","Getröstet werden","duo"],
+      ["Schwierige Nachricht: Wer macht was?","Anrufen","Danebensitzen","duo"]
+    ],
+    frech:[
+      ["Küssen","In der Öffentlichkeit","Nur daheim"],
+      ["Aufwachen","Direkt Nähe","Erst Kaffee"],
+      ["Lieber","Angefasst werden","Anfassen"],
+      ["Wochenende: Wer macht was?","Den Anfang machen","Sich treiben lassen","duo"],
+      ["Licht","Kerzen","An"],
+      ["Tempo","Langsam","Spontan"],
+      ["Outfit","Erst angucken","Direkt weg damit"],
+      ["Spannung","Den ganzen Tag Vorfreude","Überfall aus dem Nichts"],
+      ["Flirt","Nachricht schreiben","Ins Ohr flüstern"],
+      ["Ort","Hotelzimmer","Eigenes Bett"],
+      ["Dabei","Playlist","Stille"],
+      ["Morgens","Verschlafen kuscheln","Direkt aufstehen"],
+      ["Abends","Früh ins Bett","Bis nachts wach"],
+      ["Massage: Wer macht was?","Geben","Bekommen","duo"],
+      ["Einschlafen: Wer liegt wie?","Vorne kuscheln","Hinten umarmen","duo"],
+      ["Erster Schritt: Wer macht was?","Anfangen","Machen lassen","duo"],
+      ["Frühstück danach: Wer macht was?","Aufstehen und holen","Liegenbleiben","duo"],
+      ["Zuhause: Wer macht was?","Verführen","Sich verführen lassen","duo"],
+      ["Urlaub: Wer macht was?","Alles planen","Sich überraschen lassen","duo"]
+    ]
+  },
+  dare:{
+    locker:[
+      "Sing die nächsten 20 Sekunden alles, was du sagst.",
+      "Erzähl 30 Sekunden lang eine Geschichte, die du dir gerade ausdenkst.",
+      "Lass {YOU} deine letzten drei Fotos anschauen, ohne Kommentar.",
+      "Halte 20 Sekunden lang ein ernstes Gesicht, während {YOU} dich zum Lachen bringen darf.",
+      "Nenne in 20 Sekunden zehn Dinge, die blau sind.",
+      "Sprich den nächsten Satz rückwärts.",
+      "Mach den Wetterbericht für morgen, live und ohne nachzuschauen.",
+      "Zeig deine beste Tanzbewegung, 10 Sekunden.",
+      "Beschreibe euren ersten gemeinsamen Tag in genau fünf Wörtern.",
+      "Zeig {YOU} das peinlichste Foto auf deinem Handy.",
+      "Sprich eine Minute lang nur in Fragen.",
+      "Mach nach, wie {YOU} morgens aufsteht.",
+      "Bau aus drei Dingen im Raum ein Denkmal für euch beide.",
+      "Lies die letzte Nachricht vor, die du heute bekommen hast.",
+      "Nenne in 15 Sekunden fünf Dinge, die {YOU} gut kann.",
+      "Erfinde einen Werbespruch für euer Zuhause.",
+      "Tanz 15 Sekunden ohne Musik.",
+      "Rede 30 Sekunden im Nachrichtensprecher-Ton über euren Tag.",
+      "Mach ein Selfie mit dem dümmsten Gesicht, das du hinkriegst.",
+      "Erzähl 20 Sekunden von deinem Tag, ohne das Wort ich zu benutzen.",
+      "Mach zehn Kniebeugen oder erzähl einen Witz.",
+      "Steh 20 Sekunden auf einem Bein, Augen zu.",
+      "Sprich 30 Sekunden mit einem erfundenen Akzent.",
+      "Such das älteste Foto von euch beiden auf deinem Handy.",
+      "Nenne zehn Sachen aus eurem Kühlschrank, ohne nachzugucken."
+    ],
+    nah:[
+      "Sag drei Dinge, für die du heute dankbar bist. Zwei davon über {YOU}.",
+      "Erzähl, was du an eurem gemeinsamen Alltag am meisten magst.",
+      "Sag {YOU}, was du an ihm bewunderst, ohne das Wort toll zu benutzen.",
+      "Erinnere {YOU} an einen Moment, in dem er über sich hinausgewachsen ist.",
+      "Beschreib in 30 Sekunden, wie es sich anfühlt, nach Hause zu kommen.",
+      "Sag einen Satz, der mit Ich verspreche dir anfängt.",
+      "Erzähl von einem Tag, an dem du froh warst, dass es {YOU} gibt.",
+      "Schau {YOU} 30 Sekunden in die Augen, ohne zu reden.",
+      "Erzähl von einem Moment, in dem du dich richtig sicher gefühlt hast.",
+      "Schreib {YOU} jetzt eine Nachricht, die morgen früh ankommen soll.",
+      "Sag etwas, das du dich sonst nicht traust zu sagen.",
+      "Beschreib {YOU} so, wie du ihn einem Fremden beschreiben würdest.",
+      "Erzähl, was du dir für euch beide in einem Jahr wünschst.",
+      "Klär eine Kleinigkeit, die nie ausgesprochen wurde.",
+      "Nimm die Hand von {YOU} und erzähl von eurem schönsten Tag.",
+      "Nenne eine Sache, die du an dir ändern willst, und warum.",
+      "Erzähl 30 Sekunden lang nur Gutes über {YOU}.",
+      "Sag, was du an eurer Beziehung nie ändern willst.",
+      "Erzähl von dem Tag, an dem du wusstest, das hier ist ernst.",
+      "Beschreib, wie es sich anfühlt, wenn {YOU} den Raum betritt.",
+      "Bedank dich für etwas, das schon lange her ist."
+    ],
+    frech:[
+      "Flüster {YOU} etwas ins Ohr, das sonst niemand hören darf.",
+      "Halte 30 Sekunden lang seine Hand und sag dabei nichts.",
+      "Beschreib in einem Satz, was du gerade gern machen würdest.",
+      "Gib {YOU} einen Kuss, der länger dauert als drei Sekunden.",
+      "Zeig {YOU}, wie du geküsst werden willst.",
+      "Sag ihm eine Sache, die er heute Abend auf keinen Fall vergessen soll.",
+      "Gib {YOU} eine 30-Sekunden-Nackenmassage.",
+      "Küss {YOU} irgendwohin, nur nicht auf den Mund.",
+      "Sag in drei Wörtern, woran du gerade denkst.",
+      "Erzähl von etwas, das du gern mal ausprobieren würdest.",
+      "Mach {YOU} ein Kompliment, das deutlich unter die Gürtellinie geht.",
+      "Halt 20 Sekunden Blickkontakt, ohne zu grinsen.",
+      "Lass {YOU} entscheiden, was du als Nächstes machst.",
+      "Beschreib euren besten gemeinsamen Abend in einem Satz, den man nicht laut vorlesen sollte.",
+      "Zieh ein Kleidungsstück aus oder gib {YOU} zwei Punkte.",
+      "Küss {YOU} 10 Sekunden lang.",
+      "Flüster, was du in einer Stunde gern machen würdest.",
+      "Lass {YOU} eine Stelle aussuchen, die du massierst.",
+      "Erzähl, was dir am letzten gemeinsamen Abend am besten gefallen hat."
+    ]
+  },
+  truth:{
+    locker:[
+      "Was hast du zuletzt heimlich gegessen?",
+      "Welche Serie hast du abgebrochen und so getan, als hättest du sie zu Ende geschaut?",
+      "Was ist das Unvernünftigste, das du dir gekauft hast?",
+      "Welche Nachricht hast du zu lange nicht beantwortet?",
+      "Was kannst du überhaupt nicht, gibst es aber ungern zu?",
+      "Welchen Trend verstehst du nicht?",
+      "Was hast du heute vergessen und keinem gesagt?",
+      "Welche kleine Lüge erzählst du regelmäßig?",
+      "Welche Serie schämst du dich zu mögen?",
+      "Wen aus eurem Umfeld findest du anstrengend?",
+      "Was war dein dümmster Kauf?",
+      "Welche Musik hörst du nur, wenn keiner dabei ist?",
+      "Was würdest du tun, wenn du eine Woche unsichtbar wärst?",
+      "Was hast du heute schon vergessen?",
+      "Worüber hast du dich diese Woche geärgert, ohne es zu sagen?",
+      "Welche Ausrede benutzt du am häufigsten?",
+      "Was hast du zuletzt gegoogelt?",
+      "Was würdest du nie wieder machen?",
+      "Worin bist du heimlich richtig gut?",
+      "Was nervt dich an dir selbst?",
+      "Welche Angewohnheit von dir würdest du gern abstellen?"
+    ],
+    nah:[
+      "Wann hattest du zuletzt Angst, {YOU} zu verlieren?",
+      "Was würdest du gern besser können, um für ihn da zu sein?",
+      "Welche Entscheidung in deinem Leben würdest du gern nochmal neu treffen?",
+      "Wann hast du dich zuletzt richtig verstanden gefühlt?",
+      "Was hast du an dir verändert, weil du es wolltest, nicht weil es jemand verlangt hat?",
+      "Wovor läufst du gerade weg?",
+      "Was tut dir gut und du machst es trotzdem zu selten?",
+      "Was vermisst du an früher?",
+      "Wobei fühlst du dich unsicher?",
+      "Welches Thema umgeht ihr beide?",
+      "Was verzeihst du dir selbst nicht?",
+      "Wann warst du zuletzt richtig stolz auf dich?",
+      "Was brauchst du von {YOU}, wenn es dir schlecht geht?",
+      "Welche Erwartung an euch hast du losgelassen?",
+      "Was hat dich in letzter Zeit verändert?",
+      "Wovor hattest du als Kind am meisten Angst?",
+      "Was fehlt dir gerade in deinem Leben?",
+      "Wann hast du dich zuletzt einsam gefühlt?",
+      "Was würdest du deinem 20-jährigen Ich sagen?",
+      "Welchen Traum hast du aufgegeben?",
+      "Was macht dich stolz auf euch beide?"
+    ],
+    frech:[
+      "Was war dein erster Gedanke, als du {YOU} das erste Mal gesehen hast?",
+      "Was würdest du machen, wenn ihr euch heute zum ersten Mal begegnen würdet?",
+      "Welcher Moment zwischen euch war unerwartet intensiv?",
+      "Was hat dich an dir selbst überrascht, seit ihr zusammen seid?",
+      "Was würdest du ihm ins Ohr flüstern, wenn ihr in Gesellschaft seid?",
+      "Wo hast du schon an {YOU} gedacht, wo du es besser nicht hättest tun sollen?",
+      "Was findest du an {YOU} am unwiderstehlichsten?",
+      "Was hast du noch nie gesagt, aber oft gedacht?",
+      "Welche Situation zwischen euch spielst du im Kopf nochmal durch?",
+      "Was würdest du machen, wenn ihr jetzt vier Stunden für euch hättet?",
+      "Was war der beste Kuss deines Lebens?",
+      "Wo würdest du riskieren, erwischt zu werden?",
+      "Was findest du an dir selbst attraktiv?",
+      "Welche Nachricht hast du gelöscht, bevor sie jemand sehen konnte?"
+    ]
+  },
+  who:{
+    locker:[
+      "verschläft öfter?",
+      "gibt beim Einkaufen mehr Geld aus als geplant?",
+      "verliert schneller die Nerven bei Technik?",
+      "redet mehr, wenn er nervös ist?",
+      "würde sich eher verfahren und es nicht zugeben?",
+      "kann besser handwerken?",
+      "trödelt morgens länger?","verliert zuerst die Geduld?","braucht länger im Bad?",
+      "schaut öfter aufs Handy?","hat den schlechteren Musikgeschmack?","kann besser kochen?",
+      "würde beim Wandern zuerst aufgeben?","vergisst Geburtstage?","ist im Streit sturer?",
+      "räumt eher auf?","lacht am meisten über eigene Witze?","redet mit Tieren wie mit Menschen?",
+      "isst mehr Süßkram?","würde einen Streit mit dem Nachbarn anfangen?",
+      "findet die Schlüssel schneller?","kann besser Geschichten erzählen?",
+      "ist morgens schlechter gelaunt?","würde eher eine Verabredung absagen?"
+    ],
+    nah:[
+      "zeigt Gefühle leichter?",
+      "denkt mehr über die Zukunft nach?",
+      "traut sich eher, nachzufragen, wenn was komisch ist?",
+      "nimmt sich Kritik mehr zu Herzen?",
+      "kann besser um Hilfe bitten?","entschuldigt sich zuerst?","braucht mehr Nähe?",
+      "hat mehr Angst vor Veränderung?","hält den Laden zusammen, wenn's schwierig wird?",
+      "merkt schneller, wenn's dem anderen schlecht geht?","plant die Zukunft konkreter?",
+      "würde alles stehen lassen und wegziehen?","denkt öfter an früher?",
+      "denkt öfter an den anderen?","kann besser zuhören?","braucht öfter Bestätigung?",
+      "verzeiht schneller?"
+    ],
+    frech:[
+      "flirtet unabsichtlich mit allen?",
+      "fängt öfter mit dem Küssen an?",
+      "denkt spontaner an sowas?",
+      "würde eher ein Wochenende im Bett verbringen?","macht den ersten Schritt?","hat die wildere Fantasie?",
+      "gibt schneller nach?","würde im Urlaub mehr wagen?","ist lauter?",
+      "denkt öfter dran, als zugegeben wird?","fängt öfter mit dem Kuscheln an?",
+      "würde eher an einem ungewöhnlichen Ort mitmachen?","hat mehr Ausdauer?"
+    ]
+  },
+  blitz:{
+    locker:[
+      "Dinge in eurer Küche",
+      "Sachen, die ihr beide nicht ausstehen könnt",
+      "Orte in eurem Ort, die ihr beide kennt",
+      "Dinge, die im Auto liegen",
+      "Geräte, die bei euch Strom fressen","Städte, in denen ihr zusammen wart","Filme mit Tieren",
+      "Serien, die ihr zusammen geschaut habt","Dinge auf eurer Einkaufsliste","Automarken",
+      "Sachen, die {ME} jeden Morgen macht","Gerichte, die ihr beide mögt",
+      "Dinge, die {YOU} besitzt und nie benutzt","Sachen, die in eurem Flur liegen",
+      "Gemüsesorten","Dinge, die man im Urlaub vergisst"
+    ],
+    nah:[
+      "Dinge, für die du {YOU} dankbar bist","Gemeinsame Ausflüge","Eigenarten von {YOU}, die du magst",
+      "Momente, an die du gern zurückdenkst","Pläne, die ihr noch habt",
+      "Sachen, die euch beide beruhigen","Dinge, die {YOU} besser kann als du"
+    ],
+    frech:[
+      "Orte, an denen ihr euch geküsst habt","Sachen, die du an {YOU} anziehend findest",
+      "Dinge, die ihr noch ausprobieren wollt","Spitznamen füreinander",
+      "Gründe, warum es gestern hätte passieren können"
+    ]
+  },
+  draw:{
+    locker:[
+      "Waschmaschine",
+      "Rasenmäher","Wäscheständer","Toaster","Fahrradhelm","Schubkarre",
+      "Kaffeetasse","Gartenschlauch","Bettdecke","Wasserkocher","Fahrrad","Geburtstagstorte","Regenschirm","Hund im Bett","Kaffeemaschine",
+      "Koffer im Urlaub","Grillabend","Schneemann","Fernseher","Zahnbürste","Sofa","Staubsauger",
+      "Pizza","Flugzeug","Gartenzaun","Weihnachtsbaum","Handy mit neuer Nachricht","Supermarktkasse",
+      "Regentag"
+    ],
+    nah:[
+      "Euer erstes Date","Euer Zuhause","Heiratsantrag","Gemeinsamer Urlaub","Händchen halten",
+      "Sofa-Abend zu zweit","Umarmung","Hochzeit","Umzugskartons","Frühstück im Bett"
+    ],
+    frech:[
+      "Kuss","Kerzenschein","Doppelbett","Massage","Flitterwochen","Hotelzimmer","Rosenblätter",
+      "Nasse Badewanne"
+    ]
+  },
+  memory:{
+    locker:[
+      "Wann habt ihr euch das erste Mal getroffen — Monat und Jahr?",
+      "Welches Tier oder welche Pflanze kam zuerst zu euch?",
+      "Was war eure erste gemeinsame Anschaffung über hundert Euro?",
+      "An welchem Ort wart ihr zusammen am häufigsten?",
+      "Wer hat zuerst geschrieben, und was stand drin?",
+      "Was war euer erstes gemeinsames Essen?",
+      "Welches Lied lief bei eurer ersten gemeinsamen Autofahrt?",
+      "Wohin ging euer erster gemeinsamer Urlaub?",
+      "Was war das erste Geschenk zwischen euch?",
+      "Wer hat zuerst gesagt, dass es ernst ist?",
+      "Welches Möbelstück habt ihr zuerst zusammen gekauft?",
+      "Was war das erste Restaurant, in dem ihr wart?",
+      "Wie war das Wetter an eurem ersten gemeinsamen Tag?"
+    ],
+    nah:[
+      "Was war euer schwerster gemeinsamer Tag?",
+      "Welcher Streit war der erste richtige?",
+      "Welche Entscheidung habt ihr zusammen getroffen, die alles verändert hat?",
+      "Welcher Abend ist euch beiden am stärksten geblieben?",
+      "Wann habt ihr euch zuletzt richtig ausgelacht?",
+      "Welches Versprechen habt ihr euch gegeben?",
+      "Wann habt ihr euch das erste Mal richtig gestritten und wieder vertragen?"
+    ],
+    frech:[
+      "Wo war euer erster Kuss?",
+      "Was hattet ihr beim ersten Mal an?",
+      "Welche Nacht würdet ihr beide sofort wiederholen?",
+      "Wo war es am riskantesten?",
+      "Welcher Urlaubsabend war der beste?"
+    ]
+  },
+  team:{
+    locker:[
+      "Zählt abwechselnd bis 20, ohne abzusprechen, wer dran ist. Redet ihr gleichzeitig, fangt ihr von vorn an. 60 Sekunden.",
+      "Nennt abwechselnd Städte mit A. 30 Sekunden durchhalten.",
+      "Baut in 60 Sekunden einen Turm aus Sachen, die gerade rumliegen.",
+      "Singt zusammen eine Strophe von einem Lied, das ihr beide könnt.",
+      "Findet in 30 Sekunden drei Dinge im Raum, die euch beiden gehören.",
+      "Bildet zusammen einen Satz, jeder sagt abwechselnd ein Wort. Er muss Sinn ergeben.",
+      "Nennt gleichzeitig auf drei eine Farbe. Gleiche Farbe zählt.",
+      "Zählt zusammen rückwärts von 30, abwechselnd. Ein Fehler, und ihr fangt neu an.",
+      "Nennt abwechselnd Dinge, die ihr beide gut findet. Zehn Stück in 45 Sekunden.",
+      "Erfindet in 30 Sekunden einen Namen für euer nächstes Haustier, auf den ihr euch einigt."
+    ],
+    nah:[
+      "Nennt gleichzeitig auf drei einen Plan für nächstes Jahr. Gleiches Wort zählt.",
+      "Erzählt abwechselnd je einen Satz über euren schönsten Tag, bis die Geschichte steht.",
+      "Sagt euch gleichzeitig, was ihr gerade aneinander am meisten schätzt.",
+      "Findet in 30 Sekunden drei Dinge, die ihr beide ändern wollt.",
+      "Einigt euch in 60 Sekunden auf drei Regeln für euch beide.",
+      "Nennt gleichzeitig auf drei einen Ort, an den ihr zusammen wollt."
+    ],
+    frech:[
+      "Schaut euch 30 Sekunden an. Wer zuerst lacht, kostet es euch beide.",
+      "Nennt auf drei gleichzeitig einen Ort, an dem ihr es nochmal machen würdet.",
+      "Küsst euch, bis einer aufhört. Mindestens 15 Sekunden.",
+      "Sagt gleichzeitig, was ihr am anderen am anziehendsten findet. Gleiche Antwort zählt."
+    ]
+  }
+};
+
+var PENALTY = [
+  "Eine Runde lang darfst du nur flüstern.",
+  "Mach zehn Kniebeugen.",
+  "Trink ein Glas Wasser in einem Zug.",
+  "Den nächsten Satz, den du sagst, singst du.",
+  "Morgen machst du den Abwasch.",
+  "{YOU} darf dir eine Frage stellen, die du beantworten musst.",
+  "Halt zehn Sekunden eine Grimasse.",
+  "Du holst {YOU} jetzt was zu trinken.",
+  "Sag {YOU} drei Komplimente hintereinander.",
+  "Die nächste Runde darfst du nicht kneifen.",
+  "Leg das Handy weg, bis du wieder dran bist.",
+  "Erzähl in einem Satz, warum du gekniffen hast."
+];
+
+/* ==================== ABEND ZU ZWEIT ==================== */
+var ETAPPEN=[
+  {
+    title:"Ankommen",
+    sub:"Zehn Minuten, damit der Tag von euch abfällt.",
+    steps:[
+      "Legt beide die Handys außer Reichweite — bis auf dieses hier. Holt euch was zu trinken und setzt euch so hin, dass ihr euch anschauen könnt.",
+      "Erzählt euch abwechselnd, wie euer Tag war. Nicht die Zusammenfassung, sondern den Moment, der hängengeblieben ist.",
+      "Sagt euch, was ihr heute Abend braucht: Ruhe, Albernheit, Reden oder einfach Nähe. Kein langes Begründen, ein Wort reicht.",
+      "Letzter Schritt: Nennt beide etwas, das heute gut gelaufen ist. Auch wenn es winzig war."
+    ]
+  },
+  {
+    title:"Wo wir herkommen",
+    sub:"Erinnerungen ausgraben, auch die verschütteten.",
+    steps:[
+      "Einer fängt an: Erzähl von dem Moment, in dem dir zum ersten Mal klar war, dass aus euch etwas wird. Der andere hört zu, ohne zu unterbrechen. Dann Wechsel.",
+      "Sucht zusammen ein Foto aus eurer Anfangszeit. Erzählt euch, woran ihr euch bei dem Tag noch erinnert — und wo eure Erinnerungen auseinandergehen.",
+      "Welche gemeinsame Geschichte erzählt ihr anderen Leuten am häufigsten? Erzählt sie euch nochmal gegenseitig, jeder aus seiner Sicht.",
+      "Denkt an eine schwere Zeit, die ihr zusammen überstanden habt. Sagt euch, was der andere damals getan hat, das geholfen hat.",
+      "Zum Abschluss: Was von damals ist heute noch genauso?"
+    ]
+  },
+  {
+    title:"Unfug",
+    sub:"Etwas Leichtes zwischendurch. Nicht zu ernst nehmen.",
+    steps:[
+      "Beschreibt euch gegenseitig in drei Wörtern, wie euch fremde Leute wahrscheinlich sehen. Und dann in drei Wörtern, wie ihr wirklich seid.",
+      "Denkt euch zusammen einen Namen für eure Beziehung aus, als wärt ihr eine Band. Dazu das Albumcover: beschreibt es.",
+      "Ratespiel: Einer denkt an einen gemeinsamen Bekannten, der andere darf zehn Fragen stellen, die nur mit Ja oder Nein zu beantworten sind.",
+      "Macht ein Foto, auf dem ihr beide so ausseht wie in dreißig Jahren. Es darf lächerlich werden.",
+      "Wer von euch könnte den anderen besser imitieren? Probiert es beide, dann entscheidet."
+    ]
+  },
+  {
+    title:"Was noch kommt",
+    sub:"Der Teil, der im Alltag immer hinten runterfällt.",
+    steps:[
+      "Nennt beide eine Sache, die ihr in den nächsten zwölf Monaten zusammen machen wollt. Erst beide überlegen, dann gleichzeitig sagen.",
+      "Was würdet ihr ändern, wenn Geld für ein Jahr keine Rolle spielt? Redet nicht über das Geld, sondern über den Tagesablauf, den ihr hättet.",
+      "Gibt es etwas, das einer von euch aufgeschoben hat und wobei der andere helfen könnte? Sagt es, ohne dass es ein Vorwurf wird.",
+      "Einigt euch auf eine kleine Sache, die ihr in den nächsten zwei Wochen wirklich macht. Klein genug, dass es klappt. Schreibt sie gleich am Ende auf.",
+      "Wie soll es sich zwischen euch anfühlen, wenn ihr in fünf Jahren zurückblickt? Ein Satz pro Person."
+    ]
+  },
+  {
+    title:"Zum Schluss",
+    sub:"Wertschätzung. Fühlt sich am Anfang komisch an, lohnt sich trotzdem.",
+    steps:[
+      "Sagt euch drei Dinge, die der andere gut macht und die ihr sonst nicht ausspricht, weil sie selbstverständlich geworden sind.",
+      "Bedankt euch für etwas Konkretes aus den letzten Wochen. Nicht allgemein, sondern eine Situation.",
+      "Sagt einander: Das, was ich an dir am wenigsten missen möchte, ist ...",
+      "Nehmt euch dreißig Sekunden, in denen ihr euch anschaut und nichts sagt. Das ist länger, als ihr denkt.",
+      "Letzter Schritt: Schreibt einen Satz auf, der von diesem Abend bleiben soll. Er wird gespeichert und steht beim nächsten Mal wieder da."
+    ]
+  }
+];
+
+var MINUTEN={
+  laune:{ label:"Gute Laune", cards:[
+    "Was hat dich diese Woche zum Lachen gebracht? Erzähl es so, dass der andere auch lacht.",
+      "Welche Kleinigkeit hat heute gut getan?",
+      "Erfindet zusammen einen Namen für diesen Abend.",
+      "Was würdest du machen, wenn du zwei Stunden geschenkt bekämst?",
+    "Wenn dein heutiger Tag ein Filmtitel wäre — welcher?",
+    "Nennt beide auf drei ein Wort, das euren Abend beschreibt.",
+    "Was war das Peinlichste, das dir diese Woche passiert ist?",
+    "Welchen völlig unnötigen Gegenstand würdest du dir sofort kaufen?",
+    "Beschreib den anderen als Wettervorhersage für heute.",
+    "Was würdest du machen, wenn morgen alles abgesagt wäre?",
+    "Welches Lied geht dir gerade nicht aus dem Kopf? Sing die erste Zeile.",
+    "Wenn ihr zusammen ein Restaurant aufmachen müsstet — was gibt es?",
+    "Was hast du diese Woche gegessen, das es wert war?",
+    "Welche kleine Sache hat dich heute genervt? Sag es in einem dramatischen Tonfall.",
+    "Wenn du eine Stunde in einem fremden Leben verbringen könntest — wessen?",
+    "Nennt beide gleichzeitig ein Tier, das zum anderen passt.",
+    "Was wäre dein Talent, wenn du auf einer Bühne stehen müsstest?",
+    "Was war das Letzte, worüber ihr beide gleichzeitig gelacht habt?"
+  ]},
+  herz:{ label:"Fürs Herz", cards:[
+    "Wann hast du dich heute gefreut, dass es den anderen gibt?",
+      "Was hat er diese Woche gemacht, das du gut fandest?",
+      "Wofür willst du dich mal in Ruhe bedanken?",
+      "Was gibt dir gerade Halt?",
+    "Was hat der andere gesagt, das dir länger nachgegangen ist?",
+    "Wofür bist du gerade dankbar? Zwei Dinge, eins davon über euch.",
+    "Was brauchst du diese Woche mehr als sonst?",
+    "Wann hast du dich zuletzt von ihm verstanden gefühlt, ohne dass du reden musstest?",
+    "Was macht der andere, wenn es dir schlecht geht, und das hilft?",
+    "Welchen ganz normalen Moment mit ihm magst du am meisten?",
+    "Was würdest du gern öfter zusammen machen?",
+    "Sag etwas, das du zu selten sagst.",
+    "Was hat sich zwischen euch im letzten Jahr zum Besseren verändert?",
+    "Wovor hast du gerade Respekt, und was würde es leichter machen?",
+    "Wann warst du zuletzt stolz auf ihn?",
+    "Was macht euer Zuhause für dich zum Zuhause?",
+    "Was wünschst du dir für ihn ganz persönlich, unabhängig von euch?",
+    "Wenn du diesen Moment behalten könntest — warum diesen?"
+  ]},
+  bett:{ label:"Bettgeflüster", cards:[
+    "Woran hast du heute gedacht, als du ihn angeschaut hast?",
+      "Was hättest du heute gern gemacht, wenn niemand gestört hätte?",
+      "Welche Kleinigkeit von ihm macht dich an?",
+    "Was findest du gerade am anziehendsten an ihm?",
+    "Was war der beste Kuss der letzten Wochen, und wo war der?",
+    "Was würdest du machen, wenn ihr jetzt zwei Stunden für euch hättet?",
+    "Was soll er öfter machen und weiß es nicht?",
+    "Welcher Abend von euch beiden geht dir nicht aus dem Kopf?",
+    "Sag in drei Worten, was du gerade willst.",
+    "Was hast du dir schon überlegt und nie ausgesprochen?",
+    "Was macht ihn sofort unwiderstehlich?",
+    "Nennt beide auf drei einen Ort, an dem ihr es nochmal machen würdet.",
+    "Was war dein erster Gedanke, als ihr euch das erste Mal näher gekommen seid?",
+    "Womit kriegt er dich heute Abend garantiert rum?",
+    "Was hast du an ihm entdeckt, das du am Anfang noch nicht kanntest?"
+  ]},
+  alltag:{ label:"Alltag", cards:[
+    "Was steht diese Woche an, wovor dir graut?",
+      "Was sollte am Wochenende auf keinen Fall passieren?",
+      "Was braucht ihr für die nächsten Tage unbedingt?",
+    "Welche Aufgabe im Haushalt nervt dich so, dass ihr sie tauschen solltet?",
+    "Was braucht ihr im Haus, das seit Monaten fehlt?",
+    "Was würdest du an eurem Wochenrhythmus ändern?",
+    "Wann hattest du zuletzt einen Tag ganz für dich, und wann brauchst du wieder einen?",
+    "Was sollte diese Woche auf jeden Fall erledigt werden?",
+    "Welchen Termin schiebt ihr beide vor euch her?",
+    "Was hat diese Woche unerwartet gut geklappt?",
+    "Womit könnte der andere dir morgen den Tag leichter machen?",
+    "Worauf freust du dich in den nächsten vier Wochen?",
+    "Was kostet euch gerade unnötig Kraft?",
+    "Was wollt ihr im nächsten Monat einmal bewusst anders machen?"
+  ]}
+};
+
+/* ==================== FRAGENSTAPEL ==================== */
+var FRAGEN={
+  alltag:{ label:"Alltag", cards:[
+    "Was war heute der beste Moment?",
+    "Welche Kleinigkeit im Haushalt bringt dich zuverlässig auf die Palme?",
+    "Was machst du, wenn du fünfzehn Minuten für dich hast?",
+    "Welchen Teil eures Tagesablaufs würdest du sofort abschaffen?",
+    "Was hat dich diese Woche überrascht?",
+    "Wann fühlst du dich zuhause am wohlsten?",
+    "Welche Aufgabe übernimmst du gern und würdest sie nie abgeben?",
+    "Was fehlt eurer Wohnung noch?",
+    "Wovon hättest du gern mehr in der Woche?",
+    "Welchen Wochentag magst du am liebsten, und warum?",
+    "Was ist dein Ritual, das dir wichtig ist, auch wenn es banal klingt?",
+    "Wobei brauchst du morgens Ruhe?",
+    "Was kostet dich zurzeit am meisten Kraft?",
+    "Wie sieht ein perfekter freier Tag aus, ganz ohne Aufwand?",
+    "Was würdest du gern zusammen zur Gewohnheit machen?",
+    "Welche Sache schiebt ihr beide seit Monaten vor euch her?",
+    "Was gibt dir das Gefühl, dass der Tag gut gelaufen ist?",
+    "Worauf könntest du im Alltag gut verzichten?",
+    "Was willst du dieses Jahr noch geregelt kriegen?",
+    "Was machst du, wenn du nicht schlafen kannst?",
+    "Welches Essen würdest du jede Woche essen?",
+    "Wann hast du zuletzt einen Tag komplett vertrödelt, und war es gut?",
+    "Was macht der andere im Haushalt, das du nie richtig gewürdigt hast?",
+    "Welchen Ort in eurer Nähe mögt ihr beide, fahrt aber selten hin?",
+    "Was würdest du an euren Wochenenden ändern?",
+    "Welche Nachricht auf deinem Handy hast du heute am längsten angeschaut?"
+  ]},
+  wirbeide:{ label:"Wir beide", cards:[
+    "Was haltet ihr aneinander aus, das andere nicht aushalten würden?",
+    "Worin seid ihr ein gutes Team?",
+    "Was macht ihr heute besser als vor drei Jahren?",
+    "Woran merkt man von außen, dass ihr zusammengehört?",
+    "Was ist euer ungeschriebenes Gesetz?",
+    "Welche Eigenart des anderen fandest du erst nervig und magst sie inzwischen?",
+    "Wann fühlst du dich ihm am nächsten?",
+    "Was macht ihr, wenn ihr beide gleichzeitig schlechte Laune habt?",
+    "Worüber streitet ihr immer wieder, ohne dass es je gelöst wird?",
+    "Wer bremst und wer gibt Gas bei euch — und wechselt das je?",
+    "Was würdest du an eurer Aufgabenverteilung ändern?",
+    "Was hat euch zusammengeschweißt?",
+    "Worin seid ihr euch ähnlicher, als ihr zugebt?",
+    "Was würde euch guttun, wenn ihr es öfter machen würdet?",
+    "Welche Entscheidung habt ihr zusammen richtig gut getroffen?",
+    "Was, glaubst du, vermisst der andere an euch?",
+    "Welche Rolle übernimmst du automatisch, wenn es schwierig wird?",
+    "Wann hat dich der andere zuletzt überrascht?",
+    "Worauf verlässt du dich bei ihm blind?",
+    "Was soll sich zwischen euch nie ändern?",
+    "Wovor habt ihr beide Respekt, wenn ihr an die nächsten Jahre denkt?",
+    "Woran erkennt der andere, dass es dir schlecht geht?",
+    "Was fällt euch zusammen leicht, das anderen schwerfällt?",
+    "Was war die beste gemeinsame Entscheidung der letzten zwölf Monate?",
+    "Wobei wünschst du dir mehr Rückendeckung?",
+    "Was würdest du sofort wieder genauso machen?"
+  ]},
+  frueher:{ label:"Früher", cards:[
+    "Was war dein Lieblingsort als Kind?",
+    "Welches Bild aus deiner Kindheit hast du noch klar vor Augen?",
+    "Wer hat dich geprägt, ohne es zu merken?",
+    "Was wolltest du mit zwanzig unbedingt, was dir heute egal ist?",
+    "Welche Musik lief bei dir mit sechzehn?",
+    "Was war dein schlimmster Job?",
+    "Welche Freundschaft ist eingeschlafen und tut dir leid?",
+    "Welchen Rat hast du früher ignoriert und später verstanden?",
+    "Was war dein mutigster Moment?",
+    "Wovor hattest du als Kind Angst?",
+    "Welcher Lehrer oder Chef geht dir bis heute nicht aus dem Kopf?",
+    "Was hättest du dir als Jugendlicher gewünscht zu hören?",
+    "Wofür hast du dein erstes eigenes Geld ausgegeben?",
+    "Welche Entscheidung hat dein Leben in eine andere Richtung gelenkt?",
+    "Was war dein größter Reinfall?",
+    "Welches Essen erinnert dich sofort an früher?",
+    "Worauf warst du mit Anfang zwanzig stolz?",
+    "Was hast du früher gemacht und vermisst es?",
+    "Welchen Ort würdest du gern nochmal genau so erleben wie damals?",
+    "Wer war dein Vorbild?",
+    "Was wusste niemand über dich, als du jung warst?",
+    "Welcher Satz von deinen Eltern hängt dir bis heute nach?",
+    "Was hast du gelernt, weil etwas schiefging?",
+    "Welche Phase deines Lebens würdest du nicht nochmal wollen?",
+    "Was hättest du gern zehn Jahre früher gewusst?",
+    "Wann hast du dich zum ersten Mal richtig erwachsen gefühlt?"
+  ]},
+  zukunft:{ label:"Zukunft", cards:[
+    "Wo willst du in fünf Jahren morgens aufwachen?",
+    "Was willst du unbedingt noch lernen?",
+    "Was soll in einem Jahr anders sein als heute?",
+    "Welches Vorhaben schiebst du vor dir her, obwohl es dir wichtig ist?",
+    "Wovon träumst du, ohne es je auszusprechen?",
+    "Was willst du euch beiden gönnen, sobald es geht?",
+    "Welchen Ort wollt ihr zusammen sehen?",
+    "Worauf willst du in zehn Jahren zurückblicken können?",
+    "Was müsste passieren, damit du sagst: das war ein gutes Jahr?",
+    "Welche Angewohnheit willst du loswerden?",
+    "Wofür willst du dir in den nächsten Monaten Zeit freiräumen?",
+    "Wenn ihr umziehen müsstet — wohin?",
+    "Was wünschst du dir für ihn ganz allein, unabhängig von euch?",
+    "Was würdest du tun, wenn ein Jahr bezahlt frei wäre?",
+    "Welche Sache wollt ihr zusammen anfangen?",
+    "Worauf sparst du im Kopf schon hin?",
+    "Was soll auf jeden Fall bleiben, wie es ist?",
+    "Was traust du dir heute zu, was du dir vor fünf Jahren nicht zugetraut hättest?",
+    "Welche Entscheidung steht bei euch an?",
+    "Was willst du nie wieder machen müssen?",
+    "Wie soll euer Zuhause in zehn Jahren aussehen?",
+    "Was ist dein nächster kleiner Schritt in die Richtung, die du willst?",
+    "Was würdest du gern zur Tradition machen?",
+    "Was soll man später mal über euch beide sagen?",
+    "Was würdest du anpacken, wenn Scheitern egal wäre?"
+  ]},
+  ehrlich:{ label:"Ehrlich gesagt", cards:[
+    "Was verschweigst du manchmal, um keinen Streit zu haben?",
+    "Wobei bist du unsicherer, als du zugibst?",
+    "Was brauchst du, sagst es aber nie direkt?",
+    "Wann hast du zuletzt aus Bequemlichkeit geflunkert?",
+    "Was nervt dich an dir selbst am meisten?",
+    "Worauf bist du eifersüchtig, auch wenn es unlogisch ist?",
+    "Was würdest du gern öfter hören?",
+    "Wovor hast du gerade wirklich Angst?",
+    "Was hältst du zurück, weil du ihn nicht belasten willst?",
+    "Wann fühlst du dich übergangen?",
+    "Was hat dich in den letzten Monaten verletzt und wurde nie geklärt?",
+    "Womit kann man dich zuverlässig treffen?",
+    "Was machst du, wenn du dich hilflos fühlst?",
+    "Was würdest du an dir ändern, wenn es einfach ginge?",
+    "Wann hast du dich zuletzt geschämt?",
+    "Wobei bräuchtest du Hilfe und fragst nicht danach?",
+    "Was denkst du über dich, wenn niemand hinschaut?",
+    "Was ist dein blinder Fleck, den der andere längst sieht?",
+    "Wovon hättest du gern mehr in eurer Beziehung?",
+    "Was hast du gesagt zu verzeihen und trägst es trotzdem mit dir rum?",
+    "Wann bist du am schwersten zu ertragen?",
+    "Was macht dich müde, obwohl es von außen leicht aussieht?",
+    "Was wolltest du schon lange mal sagen?",
+    "Wobei erwartest du zu viel vom anderen?",
+    "Was würdest du dir raten, wenn du dein bester Freund wärst?",
+    "Worüber redest du mit niemandem?"
+  ]},
+  albern:{ label:"Albern", cards:[
+    "Welche Superkraft passt zu dir, und welche zum anderen?",
+    "Was wäre dein Auftrittssong?",
+    "Wenn ihr ein Tierpaar wärt — welche Tiere?",
+    "Wofür würdest du ohne Zögern eine Million ausgeben?",
+    "Wie hieße deine Reality-Show, und worum ginge es?",
+    "Welchen völlig sinnlosen Weltrekord würdest du angehen?",
+    "Welche drei Dinge nimmst du auf eine einsame Insel, außer ihm?",
+    "Was würdest du tun, wenn du für einen Tag unsichtbar wärst?",
+    "Wie hieße euer gemeinsames Restaurant, und was gäbe es?",
+    "Welche Verkleidung würde ihm am besten stehen?",
+    "Wenn du eine Woche jemand anderes sein könntest — wer?",
+    "Was ist der peinlichste Song, den du wirklich gut findest?",
+    "Welche Fähigkeit hättest du gern, die kein Mensch braucht?",
+    "Was wäre dein Beruf in einem Paralleluniversum?",
+    "Wenn euer Leben ein Film wäre — welches Genre?",
+    "Welcher Satz von dir könnte auf einem T-Shirt stehen?",
+    "Was würdest du tun, wenn du morgen berühmt aufwachst?",
+    "Wie hieße euer Team in einer Spielshow?",
+    "Was ist der absurdeste Gegenstand, den ihr besitzt?",
+    "Welchen Spitznamen würdest du dir selbst geben?",
+    "Welche Hausregel würdest du zum Gesetz machen?",
+    "Wenn du eine Woche ein Tier wärst — welches?",
+    "Wofür würdest du sofort in einer Castingshow antreten?",
+    "Was würdest du als Durchsage im Supermarkt sagen?",
+    "Welches Gerücht über dich würdest du selbst in die Welt setzen?"
+  ]},
+  naehe:{ label:"Nähe", cards:[
+    "Wann hast du ihn zuletzt richtig angeschaut?",
+    "Was macht er, das dich sofort weich werden lässt?",
+    "Was war euer bester Kuss?",
+    "Woran merkst du, dass er will?",
+    "Was würdest du gern öfter, traust dich aber nicht zu sagen?",
+    "Wo lässt du dich am liebsten berühren?",
+    "Was ist zwischen euch mit der Zeit besser geworden?",
+    "Was findest du an ihm körperlich unwiderstehlich?",
+    "Welche Nacht würdest du sofort wiederholen?",
+    "Was bringt dich in Stimmung, das mit Sex gar nichts zu tun hat?",
+    "Was würdest du gern mal ausprobieren?",
+    "Was soll er heute Abend machen?",
+    "Wann hattest du zuletzt das Gefühl, begehrt zu werden?",
+    "Welches Kleidungsstück an ihm gefällt dir am besten?",
+    "Was denkst du, wenn er aus dem Bad kommt?",
+    "Wo wäre es riskant, aber reizvoll?",
+    "Was hast du dir vorgestellt und nie erzählt?",
+    "Wie fängt für dich ein guter Abend zu zweit an?",
+    "Was fehlt euch gerade an Nähe?",
+    "Welche Berührung sagt mehr als reden?",
+    "Was hat dich am Anfang an ihm angezogen — und zieht es dich heute noch?",
+    "Wann fühlst du dich ihm nah, ganz ohne Worte?",
+    "Was ist dein Signal, wenn du Nähe willst?",
+    "Was würdest du tun, wenn ihr drei Tage ganz allein wärt?",
+    "Was soll er dir öfter sagen?"
+  ]}
+};
+
+var MODES = [
+  {id:"quiz",  label:"Partner-Quiz"},
+  {id:"either",label:"Entweder / Oder"},
+  {id:"dare",  label:"Challenge"},
+  {id:"tod",   label:"Wahrheit oder Pflicht"},
+  {id:"who",   label:"Wer von euch eher?"},
+  {id:"blitz", label:"Blitzrunde"},
+  {id:"draw",  label:"Zeichnen"},
+  {id:"memory",label:"Weißt du noch?"},
+  {id:"team",  label:"Gemeinsam"}
+];
+var LEVELS = [{id:"locker",label:"Locker"},{id:"nah",label:"Nah dran"},{id:"frech",label:"Frech"}];
+var PICKS  = [{id:"self",label:"Wer dran ist"},{id:"rotate",label:"Reihum"},{id:"random",label:"Zufall"}];
+var GOALS  = [
+  {id:"none",label:"Endlos"},{id:"p15",label:"Erster auf 15"},{id:"p25",label:"Erster auf 25"},
+  {id:"r10",label:"10 Runden"},{id:"r20",label:"20 Runden"}
+];
+var EXTRAS = [
+  {id:"jokerOn",label:"Joker"},
+  {id:"penalty",label:"Strafe bei Gekniffen"},
+  {id:"sound",label:"Töne"}
+];
+var TEXTMODES = ["quiz","dare","who","blitz","draw","memory","team"];
+
+/* ==================== ZUSTAND ==================== */
+var S = {
+  names:["Uli","Kevin"], scores:[0,0], wave:{hit:0,total:0}, active:0, fillMe:0,
+  modes:["quiz","either","dare","tod","who","blitz","draw","memory","team"],
+  levels:["locker","nah"], pick:"self", goal:"p15", round:0,
+  jokerOn:true, penalty:true, sound:true, joker:[1,1],
+  evening:{done:[],notes:[]},
+  custom:{}, favs:[], stats:{games:0,rounds:0,wins:[0,0],ties:0,chicken:[0,0],bestWave:0},
+  queues:{}, current:null, undo:null, rotateIdx:0, finished:false
+};
+function emptyCustom(){
+  var c={};
+  MODES.forEach(function(m){ c[m.id]={locker:[],nah:[],frech:[]}; });
+  return c;
+}
+S.custom=emptyCustom();
+
+function save(){
+  try{
+    localStorage.setItem("zuzweit3", JSON.stringify({
+      n:S.names, s:S.scores, w:S.wave, m:S.modes, l:S.levels, p:S.pick, g:S.goal, r:S.round,
+      jo:S.jokerOn, pe:S.penalty, so:S.sound, j:S.joker, c:S.custom, f:S.favs, st:S.stats, ev:S.evening
+    }));
+  }catch(e){}
+}
+function load(){
+  try{
+    var d=JSON.parse(localStorage.getItem("zuzweit3")||"null");
+    if(!d) return;
+    if(d.n) S.names=d.n;
+    if(d.s) S.scores=d.s;
+    if(d.w) S.wave=d.w;
+    if(d.m&&d.m.length) S.modes=d.m;
+    if(d.l&&d.l.length) S.levels=d.l;
+    if(d.p) S.pick=d.p;
+    if(d.g) S.goal=d.g;
+    if(d.r) S.round=d.r;
+    if(typeof d.jo==="boolean") S.jokerOn=d.jo;
+    if(typeof d.pe==="boolean") S.penalty=d.pe;
+    if(typeof d.so==="boolean") S.sound=d.so;
+    if(d.j) S.joker=d.j;
+    if(d.f) S.favs=d.f;
+    if(d.st) S.stats=d.st;
+    if(d.ev) S.evening={done:d.ev.done||[], notes:d.ev.notes||[]};
+    if(d.c) S.custom=mergeCustom(emptyCustom(), d.c);
+  }catch(e){}
+}
+function mergeCustom(base, incoming){
+  for(var m in base){
+    if(!incoming[m]) continue;
+    for(var lv in base[m]){
+      var add=incoming[m][lv];
+      if(!add || !add.length) continue;
+      var seen={};
+      base[m][lv].forEach(function(x){ seen[JSON.stringify(x)]=1; });
+      add.forEach(function(x){
+        var k=JSON.stringify(x);
+        if(!seen[k]){ seen[k]=1; base[m][lv].push(x); }
+      });
+    }
+  }
+  return base;
+}
+function mergeFavs(list){
+  var seen={};
+  S.favs.forEach(function(f){ seen[f.m+"|"+f.t]=1; });
+  list.forEach(function(f){
+    var k=f.m+"|"+f.t;
+    if(!seen[k]){ seen[k]=1; S.favs.push(f); }
+  });
+}
+
+function $(id){ return document.getElementById(id); }
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function modeLabel(id){ for(var i=0;i<MODES.length;i++){ if(MODES[i].id===id) return MODES[i].label; } return ""; }
+
+/* ==================== KARTENSTAPEL ==================== */
+function pool(mode){
+  var out=[];
+  S.levels.forEach(function(lv){
+    if(mode==="tod"){
+      (DATA.truth[lv]||[]).forEach(function(t){ out.push({kind:"truth",text:t}); });
+      (DATA.dare[lv]||[]).forEach(function(t){ out.push({kind:"dare",text:t}); });
+      (S.custom.tod[lv]||[]).forEach(function(o){ out.push({kind:o.kind,text:o.text}); });
+    }else{
+      ((DATA[mode]||{})[lv]||[]).forEach(function(t){ out.push(t); });
+      ((S.custom[mode]||{})[lv]||[]).forEach(function(t){ out.push(t); });
+    }
+  });
+  return shuffle(out);
+}
+function draw(mode){
+  if(!S.queues[mode] || !S.queues[mode].length) S.queues[mode]=pool(mode);
+  return S.queues[mode].pop();
+}
+function poolSize(){ var n=0; S.modes.forEach(function(m){ n+=pool(m).length; }); return n; }
+function customCount(){
+  var n=0;
+  for(var m in S.custom){ for(var lv in S.custom[m]){ n+=S.custom[m][lv].length; } }
+  return n;
+}
+
+/* ==================== TÖNE ==================== */
+function tone(freq,dur,type){
+  if(!S.sound) return;
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    var ctx=new AC(), o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type||"square"; o.frequency.value=freq; g.gain.value=.07;
+    o.connect(g); g.connect(ctx.destination); o.start();
+    setTimeout(function(){ try{o.stop();ctx.close();}catch(e){} }, dur||180);
+  }catch(e){}
+}
+function goodSound(){ tone(620,120); setTimeout(function(){ tone(880,160); },130); }
+function badSound(){ tone(200,220,"sawtooth"); }
+function buzz(pat){ if(navigator.vibrate) try{ navigator.vibrate(pat); }catch(e){} }
+
+/* ==================== START ==================== */
+function chipRow(host, items, isOn, onTap, cls){
+  var el=$(host); el.innerHTML="";
+  items.forEach(function(it){
+    var b=document.createElement("button");
+    b.type="button"; b.className="chip"+(cls?" "+cls:""); b.textContent=it.label;
+    b.setAttribute("aria-pressed", isOn(it.id));
+    b.onclick=function(){ onTap(it.id); };
+    el.appendChild(b);
+  });
+}
+function renderStart(){
+  chipRow("modeChips", MODES,
+    function(id){ return S.modes.indexOf(id)>-1; },
+    function(id){
+      var i=S.modes.indexOf(id);
+      if(i>-1){ if(S.modes.length>1) S.modes.splice(i,1); } else S.modes.push(id);
+      S.queues={}; renderStart(); save();
+    });
+  chipRow("levelChips", LEVELS,
+    function(id){ return S.levels.indexOf(id)>-1; },
+    function(id){
+      var i=S.levels.indexOf(id);
+      if(i>-1){ if(S.levels.length>1) S.levels.splice(i,1); } else S.levels.push(id);
+      S.queues={}; renderStart(); save();
+    }, "lvl");
+  chipRow("pickChips", PICKS, function(id){ return S.pick===id; },
+    function(id){ S.pick=id; renderStart(); save(); }, "opt");
+  chipRow("goalChips", GOALS, function(id){ return S.goal===id; },
+    function(id){ S.goal=id; renderStart(); save(); }, "opt");
+  chipRow("extraChips", EXTRAS, function(id){ return !!S[id]; },
+    function(id){ S[id]=!S[id]; renderStart(); save(); }, "opt");
+  var mine=customCount();
+  $("poolHint").textContent = poolSize()+" Karten im Stapel"+(mine?", davon "+mine+" eigene":"")+". Leer? Wird neu gemischt.";
+}
+function show(screen){
+  ["screen-start","screen-game","screen-final","screen-edit","screen-evening","screen-minutes","screen-fragen"].forEach(function(id){
+    $(id).classList.toggle("hide", id!==screen);
+  });
+  window.scrollTo(0,0);
+}
+$("startBtn").onclick=function(){
+  var a=$("n1").value.trim(), b=$("n2").value.trim();
+  S.names=[a||"Uli", b||"Kevin"];
+  S.queues={}; S.joker=[1,1]; S.finished=false; turnStart=null; S.undo=null; save();
+  show("screen-game"); keepAwake(); nextTurn(true);
+};
+$("editBtn").onclick=function(){ renderEditor(); show("screen-edit"); };
+$("statBtn").onclick=function(){ openStats(); };
+$("evBtn").onclick=function(){ openEvening(); };
+$("minBtn").onclick=function(){ openMinutes(); };
+$("fragBtn").onclick=function(){ openFragen(); };
+
+/* ==================== ANZEIGE ==================== */
+function paintScores(){
+  $("sc1").querySelector("b").textContent=S.names[0];
+  $("sc2").querySelector("b").textContent=S.names[1];
+  $("sc1").querySelector("span").textContent=S.scores[0];
+  $("sc2").querySelector("span").textContent=S.scores[1];
+  $("sc1").querySelector("i").textContent = S.jokerOn ? (S.joker[0]?"Joker frei":"Joker weg") : "";
+  $("sc2").querySelector("i").textContent = S.jokerOn ? (S.joker[1]?"Joker frei":"Joker weg") : "";
+  $("sc1").classList.toggle("on",S.active===0);
+  $("sc2").classList.toggle("on",S.active===1);
+  $("stripWave").textContent = "Wellenlänge "+S.wave.hit+"/"+S.wave.total;
+  var g=S.goal;
+  if(g==="none") $("stripGoal").textContent="Runde "+S.round;
+  else if(g.charAt(0)==="p") $("stripGoal").textContent="Runde "+S.round+" · Ziel "+g.slice(1);
+  else $("stripGoal").textContent="Runde "+S.round+" von "+g.slice(1);
+}
+function award(i,p){ S.scores[i]+=p; if(p>0) goodSound(); paintScores(); save(); }
+function waveResult(hit){
+  S.wave.total++;
+  if(hit){ S.wave.hit++; goodSound(); } else badSound();
+  paintScores(); save();
+}
+
+/* ==================== TIMER ==================== */
+var timerId=null;
+function clearTimer(){
+  if(timerId){ clearInterval(timerId); timerId=null; }
+  var t=$("timer"); if(t){ t.className="timer hide"; t.textContent="0"; }
+}
+function parseDur(text){
+  var s=String(text), m;
+  m=s.match(/(\d+)\s*Sekunden/i);  if(m) return parseInt(m[1],10);
+  m=s.match(/(\d+)\s*Minuten/i);   if(m) return parseInt(m[1],10)*60;
+  if(/eine\s+Minute/i.test(s))     return 60;
+  return 0;
+}
+function fmt(s){ return s>=60 ? Math.floor(s/60)+":"+String(s%60).padStart(2,"0") : String(s); }
+function startTimer(sec,btn,onEnd){
+  clearTimer();
+  var t=$("timer"), end=Date.now()+sec*1000;
+  t.className="timer"; t.textContent=fmt(sec);
+  if(btn) btn.textContent="Timer neu starten";
+  timerId=setInterval(function(){
+    var left=Math.round((end-Date.now())/1000);
+    if(left<=0){
+      clearInterval(timerId); timerId=null;
+      t.className="timer done"; t.textContent="Zeit um";
+      tone(660,260); buzz([120,80,120]);
+      if(onEnd) onEnd();
+      return;
+    }
+    t.textContent=fmt(left);
+    t.className="timer"+(left<=5?" low":"");
+  },200);
+}
+function timerButton(text){
+  var sec=parseDur(text); if(!sec) return null;
+  var b=act("Timer starten ("+fmt(sec)+")","btn--cyan",function(){ startTimer(sec,b); });
+  return b;
+}
+var wakeLock=null;
+function keepAwake(){
+  try{
+    if(navigator.wakeLock && !wakeLock){
+      navigator.wakeLock.request("screen").then(function(w){
+        wakeLock=w; w.addEventListener("release",function(){ wakeLock=null; });
+      }).catch(function(){});
+    }
+  }catch(e){}
+}
+document.addEventListener("visibilitychange",function(){ if(!document.hidden) keepAwake(); });
+
+/* ==================== ZEICHENFELD ==================== */
+var PAD={ open:false, strokes:[], cur:null, color:"#141014", timer:null, word:"", onHit:null, onMiss:null };
+var PAD_COLORS=["#141014","#FF2E88","#00C2FF","#FF3B20","#00D68F"];
+
+function padCtx(){
+  var c=$("padCanvas");
+  try{ return c.getContext("2d"); }catch(e){ return null; }
+}
+function padSize(){
+  var c=$("padCanvas"), ctx=padCtx(); if(!ctx) return;
+  var r=c.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  c.width=Math.max(1,Math.round(r.width*dpr));
+  c.height=Math.max(1,Math.round(r.height*dpr));
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  padRedraw();
+}
+function padRedraw(){
+  var ctx=padCtx(); if(!ctx) return;
+  var c=$("padCanvas"), dpr=window.devicePixelRatio||1;
+  ctx.clearRect(0,0,c.width/dpr,c.height/dpr);
+  ctx.lineCap="round"; ctx.lineJoin="round";
+  PAD.strokes.forEach(function(s){
+    if(s.pts.length<1) return;
+    ctx.strokeStyle=s.color; ctx.lineWidth=s.w;
+    ctx.beginPath(); ctx.moveTo(s.pts[0].x,s.pts[0].y);
+    for(var i=1;i<s.pts.length;i++) ctx.lineTo(s.pts[i].x,s.pts[i].y);
+    if(s.pts.length===1) ctx.lineTo(s.pts[0].x+0.1,s.pts[0].y+0.1);
+    ctx.stroke();
+  });
+}
+function padPoint(e){
+  var r=$("padCanvas").getBoundingClientRect();
+  return { x:e.clientX-r.left, y:e.clientY-r.top };
+}
+function padInit(){
+  var c=$("padCanvas");
+  c.addEventListener("pointerdown",function(e){
+    if(!PAD.open) return;
+    e.preventDefault();
+    try{ c.setPointerCapture(e.pointerId); }catch(err){}
+    PAD.cur={color:PAD.color, w:5, pts:[padPoint(e)]};
+    PAD.strokes.push(PAD.cur); padRedraw();
+  });
+  c.addEventListener("pointermove",function(e){
+    if(!PAD.open || !PAD.cur) return;
+    e.preventDefault();
+    PAD.cur.pts.push(padPoint(e)); padRedraw();
+  });
+  function end(){ PAD.cur=null; }
+  c.addEventListener("pointerup",end);
+  c.addEventListener("pointercancel",end);
+  c.addEventListener("pointerleave",end);
+
+  var cw=$("padColors"); cw.innerHTML="";
+  PAD_COLORS.forEach(function(col){
+    var b=document.createElement("button");
+    b.type="button"; b.className="swatch"; b.style.background=col;
+    b.setAttribute("aria-label","Farbe wählen");
+    b.setAttribute("aria-pressed", col===PAD.color);
+    b.onclick=function(){
+      PAD.color=col;
+      Array.prototype.forEach.call(cw.children,function(x){ x.setAttribute("aria-pressed", x.style.background===b.style.background); });
+    };
+    cw.appendChild(b);
+  });
+  window.addEventListener("resize",function(){ if(PAD.open) padSize(); });
+}
+function padStopTimer(){ if(PAD.timer){ clearInterval(PAD.timer); PAD.timer=null; } }
+function openPad(word, sec, onHit, onMiss){
+  PAD.open=true; PAD.strokes=[]; PAD.cur=null; PAD.word=word; PAD.onHit=onHit; PAD.onMiss=onMiss;
+  $("pad").classList.remove("hide");
+  setTimeout(function(){ padSize(); },30);
+  var t=$("padTime"), end=Date.now()+sec*1000;
+  t.className="padtime"; t.textContent=fmt(sec);
+  padStopTimer();
+  PAD.timer=setInterval(function(){
+    var left=Math.round((end-Date.now())/1000);
+    if(left<=0){
+      padStopTimer();
+      t.className="padtime done"; t.textContent="Zeit um";
+      tone(880,300); buzz([120,80,120]);
+      return;
+    }
+    t.textContent=fmt(left);
+    t.className="padtime"+(left<=5?" low":"");
+  },200);
+}
+function closePad(){
+  PAD.open=false; padStopTimer();
+  $("pad").classList.add("hide");
+  var w=$("padWordBubble"); if(w) w.remove();
+}
+function padSetup(){
+  padInit();
+  $("padUndo").onclick=function(){ PAD.strokes.pop(); padRedraw(); };
+  $("padClear").onclick=function(){ PAD.strokes=[]; padRedraw(); };
+  $("padWord").onclick=function(){
+    var old=$("padWordBubble"); if(old){ old.remove(); return; }
+    var b=document.createElement("div");
+    b.id="padWordBubble"; b.className="padword"; b.textContent=PAD.word;
+    $("pad").appendChild(b);
+    setTimeout(function(){ var x=$("padWordBubble"); if(x) x.remove(); },1600);
+  };
+  $("padHit").onclick=function(){ var f=PAD.onHit; closePad(); if(f) f(); };
+  $("padMiss").onclick=function(){ var f=PAD.onMiss; closePad(); if(f) f(); };
+}
+
+/* ==================== KARTE ==================== */
+function fill(t){
+  return String(t).split("{ME}").join(S.names[S.fillMe]).split("{YOU}").join(S.names[1-S.fillMe]);
+}
+function setCard(mode,who,q,opts){
+  clearTimer(); opts=opts||{};
+  var b=$("badge");
+  b.className="badge m-"+mode;
+  b.textContent=opts.badge || modeLabel(mode);
+  $("cardWho").textContent=fill(who);
+  $("cardQ").textContent=fill(q);
+  $("cardQ").className="q"+(opts.small?" small":"")+(opts.big?" big":"");
+  var rv=$("cardReveal"); rv.innerHTML=""; rv.classList.add("hide");
+  if(opts.reveal){
+    rv.classList.remove("hide");
+    opts.reveal.forEach(function(t){ var d=document.createElement("div"); d.textContent=t; rv.appendChild(d); });
+  }
+  var card=$("card");
+  card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+  $("handoff").classList.add("hide");
+  $("cardWrap").classList.remove("hide");
+  $("actions").innerHTML="";
+}
+function act(label,cls,fn){
+  var b=document.createElement("button");
+  b.className="btn "+(cls||""); b.textContent=label; b.onclick=fn;
+  $("actions").appendChild(b);
+  return b;
+}
+function skipButton(){
+  act("Andere Karte","btn--skip",function(){
+    var c=S.current;
+    c.card=draw(c.mode); c.step=0; c.picks=[null,null]; c.count=0; c.doer=null;
+    renderCard();
+  });
+}
+function favButton(text,mode){
+  act("Karte merken","btn--skip",function(){
+    S.favs.push({m:mode,t:text}); save(); tone(880,120);
+  });
+}
+function jokerButton(doer,other){
+  if(!S.jokerOn || !S.joker[doer]) return;
+  act("Joker: "+S.names[other]+" muss ran","btn--skip",function(){
+    S.joker[doer]--; S.current.doer=other; save();
+    handoff(S.names[other], "übernimmt die Aufgabe.");
+  });
+}
+function handoff(name,text,btn){
+  clearTimer();
+  $("cardWrap").classList.add("hide");
+  $("handoff").classList.remove("hide");
+  $("handoffName").textContent=name;
+  $("handoffText").textContent=text;
+  $("handoffBtn").textContent=btn||"Ich hab's";
+}
+$("handoffBtn").onclick=function(){ renderCard(); };
+
+/* ==================== ABLAUF ==================== */
+var turnStart=null;
+function snapshot(){
+  return { scores:S.scores.slice(), wave:{hit:S.wave.hit,total:S.wave.total}, joker:S.joker.slice(),
+           round:S.round, active:S.active, current:S.current, rotateIdx:S.rotateIdx };
+}
+function nextTurn(first){
+  S.undo = first ? null : turnStart;
+  if(goalReached()){ finish(); return; }
+  if(!first) S.active=1-S.active;
+  S.round++;
+  var mode=null;
+  if(S.pick==="random") mode=S.modes[Math.floor(Math.random()*S.modes.length)];
+  else if(S.pick==="rotate"){ mode=S.modes[S.rotateIdx % S.modes.length]; S.rotateIdx++; }
+  S.current={mode:mode, card:mode?draw(mode):null, step:0, picks:[null,null], count:0, doer:null};
+  turnStart=snapshot();
+  S.fillMe=S.active;
+  paintScores();
+  handoff(S.names[S.active], mode ? modeIntro(mode) : "ist dran und wählt die Kategorie.");
+  save();
+}
+function modeIntro(mode){
+  return ({
+    quiz:"rät etwas über den anderen.",
+    either:"muss sich entscheiden.",
+    dare:"bekommt eine Aufgabe.",
+    tod:"wählt: Wahrheit oder Pflicht.",
+    who:"tippt, wer von euch beiden.",
+    blitz:"hat 30 Sekunden zum Aufzählen.",
+    draw:"zeichnet, der andere rät.",
+    memory:"liest vor, ihr grübelt beide.",
+    team:"liest vor — ihr macht das zusammen."
+  })[mode] || "ist dran.";
+}
+function goalReached(){
+  var g=S.goal;
+  if(g==="none") return false;
+  if(g.charAt(0)==="p"){ var t=parseInt(g.slice(1),10); return S.scores[0]>=t || S.scores[1]>=t; }
+  return S.round >= parseInt(g.slice(1),10);
+}
+function chicken(doer,other){
+  S.stats.chicken[doer]++; award(other,1); badSound();
+  if(S.penalty){
+    var p=PENALTY[Math.floor(Math.random()*PENALTY.length)];
+    S.fillMe=doer;
+    setCard("penalty","Strafe für "+S.names[doer], p, {badge:"Strafe", small:true});
+    act("Erledigt, weiter","btn--go",function(){ nextTurn(); });
+  } else nextTurn();
+}
+
+function renderCard(){
+  var c=S.current, me=S.active, you=1-me;
+  S.fillMe=me;
+  paintScores();
+
+  if(!c.mode){
+    setCard("choose", S.names[me]+" wählt:", "Womit weiter?", {badge:"Kategorie"});
+    S.modes.forEach(function(id,i){
+      act(modeLabel(id), i%2 ? "btn--cyan" : "btn--pink", function(){
+        c.mode=id; c.card=draw(id); c.step=0; c.picks=[null,null]; c.count=0; c.doer=null; renderCard();
+      });
+    });
+    return;
+  }
+
+  /* ---- Partner-Quiz ---- */
+  if(c.mode==="quiz"){
+    setCard("quiz", S.names[me]+" rät — "+S.names[you]+" weiß es besser:", c.card);
+    act("Richtig (+2)","btn--yes",function(){ award(me,2); nextTurn(); });
+    act("Fast (+1)","btn--cyan",function(){ award(me,1); nextTurn(); });
+    act("Daneben","btn--pink",function(){ badSound(); nextTurn(); });
+    favButton(c.card,"quiz"); skipButton();
+    return;
+  }
+
+  /* ---- Challenge ---- */
+  if(c.mode==="dare"){
+    var doer=(c.doer==null?me:c.doer), other=1-doer;
+    S.fillMe=doer;
+    setCard("dare","Aufgabe für "+S.names[doer], c.card, {small:true});
+    timerButton(fill(c.card));
+    act("Geschafft (+2)","btn--yes",function(){ award(doer,2); nextTurn(); });
+    act("Nicht geschafft","",function(){ nextTurn(); });
+    act("Gekniffen — Punkt für "+S.names[other],"btn--pink",function(){ chicken(doer,other); });
+    if(c.doer==null) jokerButton(doer,other);
+    favButton(c.card,"dare"); skipButton();
+    return;
+  }
+
+  /* ---- Wahrheit oder Pflicht ---- */
+  if(c.mode==="tod"){
+    var d2=(c.doer==null?me:c.doer), o2=1-d2;
+    if(c.step===0){
+      setCard("tod", S.names[me]+", entscheide dich:", "Wahrheit oder Pflicht?");
+      act("Wahrheit","btn--cyan",function(){ c.card=pickKind("truth"); c.step=1; renderCard(); });
+      act("Pflicht","btn--pink",function(){ c.card=pickKind("dare");  c.step=1; renderCard(); });
+      return;
+    }
+    var isTruth=(c.card.kind==="truth");
+    S.fillMe=d2;
+    setCard("tod", (isTruth?"Wahrheit für ":"Pflicht für ")+S.names[d2], c.card.text, {small:true});
+    if(!isTruth) timerButton(fill(c.card.text));
+    act(isTruth?"Beantwortet (+2)":"Geschafft (+2)","btn--yes",function(){ award(d2,2); nextTurn(); });
+    act(isTruth?"Ausgewichen":"Nicht geschafft","",function(){ nextTurn(); });
+    act("Gekniffen — Punkt für "+S.names[o2],"btn--pink",function(){ chicken(d2,o2); });
+    if(c.doer==null && !isTruth) jokerButton(d2,o2);
+    favButton(c.card.text,"tod"); skipButton();
+    return;
+  }
+
+  /* ---- Blitzrunde ---- */
+  if(c.mode==="blitz"){
+    if(c.step===0){
+      setCard("blitz", S.names[me]+" zählt auf, "+S.names[you]+" zählt mit:", c.card, {big:true});
+      act("Start — 30 Sekunden","btn--go",function(){
+        c.step=1; c.count=0; renderCard();
+        startTimer(30,null,function(){ tone(880,300); });
+      });
+      favButton(c.card,"blitz"); skipButton();
+      return;
+    }
+    setCard("blitz", "Mitzählen: jede Antwort ein Tipp", c.card, {big:true,
+      reveal:["Antworten: "+c.count] });
+    $("timer").className="timer"; $("timer").textContent="30";
+    var counter=act("+1","btn--count",function(){
+      c.count++;
+      $("cardReveal").firstChild.textContent="Antworten: "+c.count;
+      tone(520,60);
+    });
+    act("Fertig","btn--go",function(){
+      var pts=Math.min(c.count,5);
+      clearTimer();
+      if(pts>0) award(me,pts); else badSound();
+      nextTurn();
+    });
+    return;
+  }
+
+  /* ---- Zeichnen ---- */
+  if(c.mode==="draw"){
+    setCard("draw", S.names[me]+" zeichnet — "+S.names[you]+" rät. Begriff jetzt nicht zeigen.", c.card, {big:true});
+    act("Auf dem Handy zeichnen (60 s)","btn--go",function(){
+      openPad(fill(c.card), 60,
+        function(){ award(me,2); award(you,1); nextTurn(); },
+        function(){ badSound(); nextTurn(); });
+    });
+    act("Auf Papier zeichnen, Timer hier","btn--cyan",function(){ startTimer(60,null,function(){ tone(880,300); }); });
+    act("Erraten (+2 / +1)","btn--yes",function(){ award(me,2); award(you,1); nextTurn(); });
+    act("Nicht erraten","btn--pink",function(){ badSound(); nextTurn(); });
+    favButton(c.card,"draw"); skipButton();
+    return;
+  }
+
+  /* ---- Weißt du noch ---- */
+  if(c.mode==="memory"){
+    setCard("memory", "Für euch beide", c.card, {small:true});
+    act("Wussten wir beide","btn--yes",function(){ waveResult(true); nextTurn(); });
+    act("Nur einer wusste es","btn--cyan",function(){ waveResult(false); nextTurn(); });
+    act("Keine Ahnung, beide","btn--pink",function(){ waveResult(false); nextTurn(); });
+    favButton(c.card,"memory"); skipButton();
+    return;
+  }
+
+  /* ---- Gemeinsam ---- */
+  if(c.mode==="team"){
+    setCard("team", "Gemeinsame Aufgabe", c.card, {small:true});
+    timerButton(fill(c.card));
+    act("Geschafft","btn--yes",function(){ waveResult(true); nextTurn(); });
+    act("Vergeigt","btn--pink",function(){ waveResult(false); nextTurn(); });
+    favButton(c.card,"team"); skipButton();
+    return;
+  }
+
+  /* ---- Entweder/Oder und Wer eher ---- */
+  if(c.mode==="either" || c.mode==="who"){
+    var isWho=(c.mode==="who");
+    var duo = !isWho && c.card[3]==="duo";
+    var q   = isWho ? ("Wer von euch "+c.card) : (c.card[0]+(duo?"":"?"));
+    var o1  = isWho ? S.names[0] : c.card[1];
+    var oB  = isWho ? S.names[1] : c.card[2];
+    var turnPlayer = (c.step===0) ? me : you;
+
+    if(c.step<2){
+      var label = isWho ? S.names[turnPlayer]+" tippt:"
+        : (c.step===0 ? S.names[turnPlayer]+" wählt:"
+           : S.names[turnPlayer]+(duo?" wählt — passt das zusammen?":" wählt — kommt ihr auf dasselbe?"));
+      setCard(c.mode, label, q);
+      var pick=function(v){
+        c.picks[turnPlayer]=v;
+        if(c.step===0){ c.step=1; handoff(S.names[you], isWho?"tippt jetzt.":"ist dran. Nicht spicken."); }
+        else { c.step=2; renderCard(); }
+      };
+      act(o1, isWho?"btn--pink":"btn--cyan", function(){ pick(o1); });
+      act(oB, isWho?"btn--cyan":"btn--pink", function(){ pick(oB); });
+      if(c.step===0) skipButton();
+      return;
+    }
+
+    var same=(c.picks[0]===c.picks[1]);
+    var hit = duo ? !same : same;
+    var headline = duo ? (hit?"Passt zusammen":"Beide wollen dasselbe")
+                       : (hit?"Gleiche Wellenlänge":"Zwei Meinungen");
+    setCard(c.mode, headline, q, { reveal:[ S.names[0]+": "+c.picks[0], S.names[1]+": "+c.picks[1] ] });
+    var v=document.createElement("div");
+    v.className="verdict";
+    v.textContent = hit ? "Treffer für euch beide" : (duo?"Klärt das unter euch":"Kein Treffer");
+    $("card").appendChild(v);
+    waveResult(hit);
+    act("Weiter","btn--go",function(){ nextTurn(); });
+  }
+}
+function pickKind(kind){
+  var c=draw("tod"), guard=0;
+  while(c.kind!==kind && guard<120){ c=draw("tod"); guard++; }
+  return c;
+}
+
+/* ==================== MENÜ, ENDE, STATISTIK ==================== */
+$("menuBtn").onclick=function(){ $("sheet").classList.remove("hide"); };
+$("mResume").onclick=function(){ $("sheet").classList.add("hide"); };
+$("mSettings").onclick=function(){ $("sheet").classList.add("hide"); renderStart(); show("screen-start"); };
+$("mCards").onclick=function(){ $("sheet").classList.add("hide"); renderEditor(); show("screen-edit"); };
+$("mStats").onclick=function(){ $("sheet").classList.add("hide"); openStats(); };
+$("mEnd").onclick=function(){ $("sheet").classList.add("hide"); finish(); };
+$("mUndo").onclick=function(){
+  $("sheet").classList.add("hide");
+  if(!S.undo) return;
+  var u=S.undo;
+  S.scores=u.scores.slice(); S.wave={hit:u.wave.hit,total:u.wave.total}; S.joker=u.joker.slice();
+  S.round=u.round; S.active=u.active; S.current=u.current; S.rotateIdx=u.rotateIdx;
+  S.undo=null; turnStart=snapshot(); S.fillMe=S.active; save(); paintScores();
+  if(S.current){
+    S.current.step=0; S.current.picks=[null,null]; S.current.count=0; S.current.doer=null;
+    handoff(S.names[S.active], S.current.mode ? modeIntro(S.current.mode) : "ist dran und wählt die Kategorie.");
+  } else nextTurn(true);
+};
+$("sheet").addEventListener("click",function(e){ if(e.target.id==="sheet") $("sheet").classList.add("hide"); });
+
+function finish(){
+  clearTimer();
+  var a=S.scores[0], b=S.scores[1];
+  if(!S.finished){
+    S.finished=true;
+    S.stats.games++; S.stats.rounds+=S.round;
+    if(a>b) S.stats.wins[0]++; else if(b>a) S.stats.wins[1]++; else S.stats.ties++;
+    var pct = S.wave.total ? Math.round(S.wave.hit/S.wave.total*100) : 0;
+    if(pct>S.stats.bestWave) S.stats.bestWave=pct;
+    save();
+  }
+  $("finalTitle").textContent = (a===b) ? "Unentschieden" : ((a>b?S.names[0]:S.names[1])+" gewinnt");
+  $("finalScore").textContent = S.names[0]+" "+a+" : "+b+" "+S.names[1];
+  var p2 = S.wave.total ? Math.round(S.wave.hit/S.wave.total*100) : 0;
+  $("finalLine").textContent = S.round+" Runden. Wellenlänge: "+S.wave.hit+" von "+S.wave.total
+    + (S.wave.total? " ("+p2+" Prozent)" : "");
+  show("screen-final");
+}
+$("againBtn").onclick=function(){
+  S.scores=[0,0]; S.wave={hit:0,total:0}; S.round=0; S.queues={}; S.joker=[1,1];
+  S.undo=null; turnStart=null; S.finished=false; save();
+  show("screen-game"); keepAwake(); nextTurn(true);
+};
+$("keepBtn").onclick=function(){
+  S.goal="none"; S.undo=null; turnStart=null; S.finished=false; save();
+  show("screen-game"); keepAwake(); nextTurn(true);
+};
+$("backBtn").onclick=function(){ renderStart(); show("screen-start"); };
+
+function openStats(){
+  var st=S.stats, body=$("statBody"); body.innerHTML="";
+  var rows=[
+    ["Abende gespielt", st.games],
+    ["Runden insgesamt", st.rounds],
+    ["Siege "+S.names[0], st.wins[0]],
+    ["Siege "+S.names[1], st.wins[1]],
+    ["Unentschieden", st.ties],
+    ["Gekniffen "+S.names[0], st.chicken[0]],
+    ["Gekniffen "+S.names[1], st.chicken[1]],
+    ["Beste Wellenlänge", st.bestWave+" Prozent"]
+  ];
+  rows.forEach(function(r){
+    var d=document.createElement("div"); d.className="statrow";
+    var a=document.createElement("span"); a.textContent=r[0];
+    var b=document.createElement("span"); b.textContent=r[1];
+    d.appendChild(a); d.appendChild(b); body.appendChild(d);
+  });
+  $("statSheet").classList.remove("hide");
+}
+$("stClose").onclick=function(){ $("statSheet").classList.add("hide"); };
+$("stReset").onclick=function(){
+  S.stats={games:0,rounds:0,wins:[0,0],ties:0,chicken:[0,0],bestWave:0}; save(); openStats();
+};
+$("statSheet").addEventListener("click",function(e){ if(e.target.id==="statSheet") $("statSheet").classList.add("hide"); });
+
+/* ==================== EIGENE KARTEN ==================== */
+var E={ mode:"quiz", level:"locker", duo:false, kind:"truth" };
+function renderEditor(){
+  chipRow("eModeChips", MODES, function(id){ return E.mode===id; },
+    function(id){ E.mode=id; renderEditor(); });
+  chipRow("eLevelChips", LEVELS, function(id){ return E.level===id; },
+    function(id){ E.level=id; renderEditor(); }, "lvl");
+
+  var f=$("eFields"); f.innerHTML="";
+  function input(id,ph){
+    var i=document.createElement("input");
+    i.type="text"; i.id=id; i.placeholder=ph; i.autocomplete="off";
+    f.appendChild(i); return i;
+  }
+  var hint="";
+  if(E.mode==="either"){
+    input("eText","Frage, zum Beispiel Urlaub");
+    input("eA","Antwort A"); input("eB","Antwort B");
+    var w=document.createElement("button");
+    w.type="button"; w.className="chip opt"; w.textContent="Wer macht was? (Treffer bei unterschiedlich)";
+    w.setAttribute("aria-pressed", E.duo?"true":"false");
+    w.onclick=function(){ E.duo=!E.duo; w.setAttribute("aria-pressed", E.duo?"true":"false"); };
+    f.appendChild(w);
+    hint="Normale Karte: Treffer, wenn ihr dasselbe wählt. Wer macht was: Treffer, wenn ihr unterschiedlich wählt.";
+  }else if(E.mode==="tod"){
+    input("eText","Frage oder Aufgabe");
+    var k=document.createElement("div"); k.className="chips";
+    [["truth","Wahrheit"],["dare","Pflicht"]].forEach(function(p){
+      var b=document.createElement("button");
+      b.type="button"; b.className="chip opt"; b.textContent=p[1];
+      b.setAttribute("aria-pressed", E.kind===p[0]);
+      b.onclick=function(){ E.kind=p[0]; renderEditor(); };
+      k.appendChild(b);
+    });
+    f.appendChild(k);
+    hint="Zeitangabe wie 20 Sekunden im Text erzeugt automatisch einen Timer.";
+  }else if(E.mode==="who"){
+    input("eText","verschläft öfter?");
+    hint="Die Karte beginnt automatisch mit: Wer von euch ...";
+  }else if(E.mode==="quiz"){
+    input("eText","Frage über den anderen");
+    hint="{YOU} ist der, der die Antwort kennt. {ME} ist der, der rät.";
+  }else if(E.mode==="blitz"){
+    input("eText","Thema zum Aufzählen");
+    hint="30 Sekunden, der andere zählt die Antworten mit. Bis zu fünf Punkte.";
+  }else if(E.mode==="draw"){
+    input("eText","Begriff zum Zeichnen");
+    hint="Nur der Zeichner sieht die Karte.";
+  }else if(E.mode==="memory"){
+    input("eText","Frage an euch beide");
+    hint="Zählt auf die gemeinsame Wellenlänge ein, nicht auf die Einzelpunkte.";
+  }else if(E.mode==="team"){
+    input("eText","Aufgabe für euch beide");
+    hint="Zeitangabe wie 60 Sekunden erzeugt automatisch einen Timer.";
+  }else{
+    input("eText","Aufgabe");
+    hint="Zeitangabe wie 30 Sekunden erzeugt automatisch einen Timer. {YOU} wird zum Namen des anderen.";
+  }
+  $("eHint").textContent=hint;
+  renderMyList(); renderFavs();
+}
+function itemText(mode,item){
+  if(mode==="either") return item[0]+": "+item[1]+" / "+item[2]+(item[3]==="duo"?"  (wer macht was)":"");
+  if(mode==="tod")    return (item.kind==="truth"?"Wahrheit: ":"Pflicht: ")+item.text;
+  if(mode==="who")    return "Wer von euch "+item;
+  return item;
+}
+function renderMyList(){
+  var list=$("eList"); list.innerHTML="";
+  var arr=S.custom[E.mode][E.level]||[];
+  if(!arr.length){
+    var p=document.createElement("p"); p.className="hint";
+    p.textContent="Noch keine eigenen Karten in dieser Spielart und Stufe.";
+    list.appendChild(p); return;
+  }
+  arr.forEach(function(item,idx){
+    var row=document.createElement("div"); row.className="myitem";
+    var s=document.createElement("span"); s.textContent=itemText(E.mode,item);
+    var d=document.createElement("button");
+    d.className="del"; d.type="button"; d.textContent="✕"; d.setAttribute("aria-label","Karte löschen");
+    d.onclick=function(){ arr.splice(idx,1); S.queues={}; save(); renderMyList(); };
+    row.appendChild(s); row.appendChild(d); list.appendChild(row);
+  });
+}
+function renderFavs(){
+  var list=$("favList"); list.innerHTML="";
+  if(!S.favs.length){
+    var p=document.createElement("p"); p.className="hint";
+    p.textContent="Noch nichts gemerkt. Im Spiel steht unter jeder Karte: Karte merken.";
+    list.appendChild(p); return;
+  }
+  S.favs.forEach(function(f,idx){
+    var row=document.createElement("div"); row.className="myitem";
+    var s=document.createElement("span"); s.textContent=modeLabel(f.m)+": "+f.t;
+    var d=document.createElement("button");
+    d.className="del"; d.type="button"; d.textContent="✕"; d.setAttribute("aria-label","Aus Merkliste entfernen");
+    d.onclick=function(){ S.favs.splice(idx,1); save(); renderFavs(); };
+    row.appendChild(s); row.appendChild(d); list.appendChild(row);
+  });
+}
+$("eAdd").onclick=function(){
+  var f=$("eText"); if(!f) return;
+  var t=(f.value||"").trim(); if(!t) return;
+  var arr=S.custom[E.mode][E.level];
+  if(E.mode==="either"){
+    var a=($("eA").value||"").trim(), b=($("eB").value||"").trim();
+    if(!a||!b){ $("eHint").textContent="Beide Antworten ausfüllen, sonst fehlt der Karte die Hälfte."; return; }
+    var card=[t,a,b]; if(E.duo) card.push("duo");
+    arr.push(card); $("eA").value=""; $("eB").value="";
+  }else if(E.mode==="tod"){
+    arr.push({kind:E.kind, text:t});
+  }else{
+    arr.push(t);
+  }
+  f.value=""; S.queues={}; save(); renderMyList(); tone(760,120);
+};
+$("eExport").onclick=function(){
+  try{
+    $("eIO").value=JSON.stringify({v:3, custom:S.custom, favs:S.favs});
+    $("eIO").select();
+    $("eIOHint").textContent="Text markiert. Kopieren und woanders einfügen.";
+  }catch(e){ $("eIOHint").textContent="Export hat nicht geklappt."; }
+};
+$("eImport").onclick=function(){
+  try{
+    var d=JSON.parse($("eIO").value);
+    if(!d || !d.custom){ $("eIOHint").textContent="Das sieht nicht nach einem Export aus."; return; }
+    S.custom=mergeCustom(S.custom, d.custom);
+    if(d.favs && d.favs.length) mergeFavs(d.favs);
+    S.queues={}; save(); renderEditor();
+    $("eIOHint").textContent="Karten eingelesen und zu deinen eigenen dazugelegt.";
+  }catch(e){ $("eIOHint").textContent="Konnte den Text nicht lesen. Kompletten Export einfügen."; }
+};
+$("eBack").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== ABEND ZU ZWEIT: ABLAUF ==================== */
+var EV={ etappe:0, step:0 };
+function evSave(){ save(); }
+function openEvening(){
+  renderEvList(); show("screen-evening");
+}
+function renderEvList(){
+  $("evList").classList.remove("hide");
+  $("evRun").classList.add("hide");
+  var host=$("evEtappen"); host.innerHTML="";
+  ETAPPEN.forEach(function(e,i){
+    var done=S.evening.done.indexOf(i)>-1;
+    var b=document.createElement("button");
+    b.className="btn "+(done?"btn--yes":(i%2?"btn--cyan":"btn--pink"));
+    b.style.textAlign="left";
+    b.innerHTML="";
+    var t=document.createElement("div");
+    t.style.fontFamily="'Bungee',sans-serif"; t.style.fontSize="1.05rem";
+    t.textContent=(i+1)+". "+e.title+(done?"  ✓":"");
+    var s=document.createElement("div");
+    s.style.fontSize=".85rem"; s.style.fontWeight="700"; s.style.marginTop="3px";
+    s.textContent=e.sub;
+    b.appendChild(t); b.appendChild(s);
+    b.onclick=function(){ EV.etappe=i; EV.step=0; runEvStep(); };
+    host.appendChild(b);
+  });
+  var notes=$("evNotes"); notes.innerHTML="";
+  if(S.evening.notes.length){
+    var h=document.createElement("span"); h.className="label"; h.textContent="Was geblieben ist";
+    notes.appendChild(h);
+    S.evening.notes.slice(-5).reverse().forEach(function(n){
+      var row=document.createElement("div"); row.className="myitem";
+      var s=document.createElement("span"); s.textContent=n.d+": "+n.t;
+      row.appendChild(s); notes.appendChild(row);
+    });
+  }
+  $("evProgress").textContent = S.evening.done.length+" von "+ETAPPEN.length+" Etappen gemacht."
+    + (S.evening.done.length===ETAPPEN.length ? " Ihr könnt von vorn anfangen, die Fragen tragen auch ein zweites Mal." : "");
+}
+function runEvStep(){
+  var e=ETAPPEN[EV.etappe];
+  $("evList").classList.add("hide");
+  $("evRun").classList.remove("hide");
+  $("evTitle").textContent=(EV.etappe+1)+". "+e.title;
+  $("evCount").textContent="Schritt "+(EV.step+1)+" von "+e.steps.length;
+  $("evText").textContent=e.steps[EV.step];
+  var last=(EV.step===e.steps.length-1);
+  var isNote=(EV.etappe===ETAPPEN.length-1 && last);
+  $("evNoteWrap").classList.toggle("hide", !isNote);
+  $("evNext").textContent = last ? "Etappe abschließen" : "Weiter";
+  var card=$("evCard");
+  card.classList.remove("pop"); void card.offsetWidth; card.classList.add("pop");
+  $("evBack").textContent = EV.step===0 ? "Zurück zur Übersicht" : "Ein Schritt zurück";
+}
+$("evNext").onclick=function(){
+  var e=ETAPPEN[EV.etappe];
+  if(EV.step < e.steps.length-1){ EV.step++; runEvStep(); return; }
+  var note=$("evNote").value.trim();
+  if(note){
+    var dt=new Date();
+    S.evening.notes.push({ d:dt.getDate()+"."+(dt.getMonth()+1)+"."+dt.getFullYear(), t:note });
+    $("evNote").value="";
+  }
+  if(S.evening.done.indexOf(EV.etappe)<0) S.evening.done.push(EV.etappe);
+  evSave(); tone(760,140); setTimeout(function(){ tone(980,180); },150);
+  renderEvList();
+};
+$("evBack").onclick=function(){
+  if(EV.step>0){ EV.step--; runEvStep(); } else renderEvList();
+};
+$("evHome").onclick=function(){ renderStart(); show("screen-start"); };
+$("evReset").onclick=function(){
+  S.evening.done=[]; evSave(); renderEvList();
+};
+
+/* ==================== ZWEI MINUTEN ==================== */
+var MIN={ theme:"laune", cards:[], idx:0 };
+function openMinutes(){
+  $("minPick").classList.remove("hide");
+  $("minRun").classList.add("hide");
+  var host=$("minThemes"); host.innerHTML="";
+  Object.keys(MINUTEN).forEach(function(k,i){
+    var b=document.createElement("button");
+    b.className="btn "+(["btn--yes","btn--cyan","btn--pink","btn--go"][i%4]);
+    b.textContent=MINUTEN[k].label;
+    b.onclick=function(){ startMinutes(k); };
+    host.appendChild(b);
+  });
+  show("screen-minutes");
+}
+function startMinutes(theme){
+  MIN.theme=theme;
+  MIN.cards=shuffle((MINUTEN[theme].cards||[]).slice()).slice(0,3);
+  MIN.idx=0;
+  $("minPick").classList.add("hide");
+  $("minRun").classList.remove("hide");
+  renderMinute();
+}
+function renderMinute(){
+  if(MIN.idx>=MIN.cards.length){
+    $("minTheme").textContent=MINUTEN[MIN.theme].label;
+    $("minCount").textContent="Fertig";
+    $("minText").textContent="Das waren zwei Minuten. Mehr braucht es manchmal nicht.";
+    $("minNext").textContent="Noch drei Fragen";
+    $("minNext").onclick=function(){ startMinutes(MIN.theme); };
+    return;
+  }
+  $("minTheme").textContent=MINUTEN[MIN.theme].label;
+  $("minCount").textContent="Frage "+(MIN.idx+1)+" von "+MIN.cards.length;
+  $("minText").textContent=MIN.cards[MIN.idx];
+  $("minNext").textContent = (MIN.idx===MIN.cards.length-1) ? "Letzte Frage abhaken" : "Nächste Frage";
+  $("minNext").onclick=function(){ MIN.idx++; renderMinute(); };
+  var c=$("minCard");
+  c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("minBackPick").onclick=function(){ openMinutes(); };
+$("minHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+
+/* ==================== FRAGENSTAPEL: ABLAUF ==================== */
+var FR={ cat:null, queue:[], card:"" };
+function openFragen(){
+  renderFragCats();
+  if(!FR.cat){
+    $("fragCardWrap").classList.add("hide");
+    $("fragHint").textContent="Kategorie wählen, dann geht's los. Kein Punktezähler, kein Zeitlimit — blättert, solange ihr Lust habt.";
+  }
+  show("screen-fragen");
+}
+function renderFragCats(){
+  var host=$("fragCats"); host.innerHTML="";
+  Object.keys(FRAGEN).forEach(function(k){
+    var b=document.createElement("button");
+    b.type="button"; b.className="chip"; b.textContent=FRAGEN[k].label;
+    b.setAttribute("aria-pressed", FR.cat===k);
+    b.onclick=function(){
+      FR.cat=k; FR.queue=[]; save(); renderFragCats(); nextFrage();
+    };
+    host.appendChild(b);
+  });
+}
+function nextFrage(){
+  if(!FR.cat) return;
+  if(!FR.queue.length) FR.queue=shuffle((FRAGEN[FR.cat].cards||[]).slice());
+  FR.card=FR.queue.pop();
+  $("fragCardWrap").classList.remove("hide");
+  $("fragBadge").textContent=FRAGEN[FR.cat].label;
+  $("fragText").textContent=FR.card;
+  $("fragHint").textContent="Noch "+FR.queue.length+" Fragen in dieser Kategorie. Danach wird neu gemischt.";
+  var c=$("fragCard");
+  c.classList.remove("pop"); void c.offsetWidth; c.classList.add("pop");
+}
+$("fragNext").onclick=function(){ nextFrage(); };
+$("fragFav").onclick=function(){
+  if(!FR.card) return;
+  var k=FR.card, dup=false;
+  S.favs.forEach(function(f){ if(f.t===k) dup=true; });
+  if(!dup){ S.favs.push({m:"quiz", t:k}); save(); }
+  tone(880,120);
+  $("fragHint").textContent = dup ? "Die Frage hast du dir schon gemerkt." : "Gemerkt. Steht bei den eigenen Karten.";
+};
+$("fragHome").onclick=function(){ renderStart(); show("screen-start"); };
+
+/* ==================== HOMESCREEN ==================== */
+try{
+  var manifest={ name:"Zu zweit", short_name:"Zu zweit", display:"standalone",
+    background_color:"#FFF3DC", theme_color:"#FFD400", start_url:location.href };
+  var link=document.createElement("link");
+  link.rel="manifest";
+  link.href="data:application/manifest+json;charset=utf-8,"+encodeURIComponent(JSON.stringify(manifest));
+  document.head.appendChild(link);
+}catch(e){}
+
+/* ==================== START ==================== */
+load();
+$("n1").value=S.names[0];
+$("n2").value=S.names[1];
+padSetup();
+renderStart();
+paintScores();
+</script>
+</body>
+</html>
